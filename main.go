@@ -4,6 +4,7 @@ import (
 	"api-karang-waru/config"
 	"api-karang-waru/handlers"
 	"api-karang-waru/helpers"
+	"api-karang-waru/middlewares"
 	"api-karang-waru/repositories"
 	"api-karang-waru/services"
 	"log"
@@ -25,7 +26,10 @@ func main() {
 	healthHandler := handlers.NewHealthHandler()
 	userRepository := repositories.NewUserRepository(config.DB)
 	userService := services.NewUserService(userRepository)
+	authService := services.NewAuthService()
+
 	userHandler := handlers.NewUserHandler(userService)
+	authHandler := handlers.NewAuthHandler(authService)
 
 	router := gin.Default()
 
@@ -35,7 +39,7 @@ func main() {
 		AllowHeaders:     helpers.ParseEnvList("CORS_ALLOWED_HEADERS"),
 		AllowCredentials: helpers.GetEnvBool("CORS_ALLOW_CREDENTIALS", false),
 		ExposeHeaders:    helpers.ParseEnvList("CORS_EXPOSE_HEADERS"),
-		MaxAge:           12 * 60 * 60, // 12 hours
+		MaxAge:           12 * 60 * 60,
 	}
 
 	if len(corsConfig.AllowOrigins) == 0 {
@@ -46,11 +50,17 @@ func main() {
 	router.Use(cors.New(corsConfig))
 	router.GET("/", mainHandler.MainHandler)
 	router.GET("/health", healthHandler.HealthCheck)
-	router.GET("/users", userHandler.GetUsers)
-	router.GET("/users/:id", userHandler.GetUser)
-	router.POST("/users", userHandler.CreateUser)
-	router.PUT("/users/:id", userHandler.UpdateUser)
-	router.DELETE("/users/:id", userHandler.DeleteUser)
+	router.POST("/auth/login", authHandler.Login)
+
+	auth := router.Group("/")
+	auth.Use(middlewares.JWTAuthMiddleware())
+	{
+		auth.GET("/users", userHandler.GetUsers)
+		auth.GET("/users/:id", userHandler.GetUser)
+		auth.POST("/users", userHandler.CreateUser)
+		auth.PUT("/users/:id", userHandler.UpdateUser)
+		auth.DELETE("/users/:id", userHandler.DeleteUser)
+	}
 
 	appPort := config.GetEnv("APP_PORT", "8080")
 	if err := router.Run(":" + appPort); err != nil {

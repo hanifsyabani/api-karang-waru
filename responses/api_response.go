@@ -20,6 +20,9 @@ type UserResponse struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
+
+
+
 func UserResponseFromModel(contact *models.User) UserResponse {
 	return UserResponse{
 		ID:        contact.ID,
@@ -28,4 +31,13 @@ func UserResponseFromModel(contact *models.User) UserResponse {
 		CreatedAt: helpers.FormatTimeHuman(contact.CreatedAt),
 		UpdatedAt: helpers.FormatTimeHuman(contact.UpdatedAt),
 	}
+}
+
+
+type SignInResponse struct {
+	AccessToken  string `json:"access_token"`
+	TokenType    string `json:"token_type"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	User         any    `json:"user"`
 }
