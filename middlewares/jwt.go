@@ -35,7 +35,6 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 
 		secret := config.GetEnv("SUPABASE_JWT_SECRET", "")
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			// pastikan pakai HMAC
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, jwt.ErrSignatureInvalid
 			}
@@ -45,7 +44,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		if err != nil || !token.Valid {
 			c.JSON(http.StatusUnauthorized, responses.APIResponse{
 				Code:    "UNAUTHORIZED",
-				Message: "Invalid token",cd
+				Message: "Invalid token",
 			})
 			c.Abort()
 			return

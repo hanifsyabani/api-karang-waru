@@ -40,3 +40,27 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, res)
 }
+func (h *AuthHandler) Register(c *gin.Context) {
+	var req struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, responses.APIResponse{
+			Code:    "BAD_REQUEST",
+			Message: err.Error(),
+		})
+		return
+	}
+
+	res, err := h.authService.SignUp(req.Email, req.Password)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, responses.APIResponse{
+			Code:    "UNAUTHORIZED",
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}

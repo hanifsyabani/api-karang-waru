@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	// "io"
 	"net/http"
 )
 
@@ -41,8 +40,6 @@ func (s *AuthService) SignIn(email, password string) (*responses.SignInResponse,
 		return nil, err
 	}
 
-	// respBody, _ := io.ReadAll(resp.Body)
-	// fmt.Println("DEBUG Supabase response:", string(respBody))
 	defer resp.Body.Close()
 
 	var result responses.SignInResponse
@@ -52,6 +49,33 @@ func (s *AuthService) SignIn(email, password string) (*responses.SignInResponse,
 
 	if result.AccessToken == "" {
 		return nil, fmt.Errorf("login gagal: %v", resp.Status)
+	}
+
+	return &result, nil
+}
+
+func (s *AuthService) SignUp(email, password string) (*responses.SignUpResponse, error) {
+	url := fmt.Sprintf("%s/auth/v1/signup", s.BaseURL)
+
+	body, _ := json.Marshal(map[string] interface{}{
+		"email":    email,
+		"password": password,
+	})
+
+	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(body))
+	req.Header.Set("apikey", s.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var result responses.SignUpResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
 	}
 
 	return &result, nil

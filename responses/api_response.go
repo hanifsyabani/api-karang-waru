@@ -21,8 +21,6 @@ type UserResponse struct {
 }
 
 
-
-
 func UserResponseFromModel(contact *models.User) UserResponse {
 	return UserResponse{
 		ID:        contact.ID,
@@ -34,10 +32,3 @@ func UserResponseFromModel(contact *models.User) UserResponse {
 }
 
 
-type SignInResponse struct {
-	AccessToken  string `json:"access_token"`
-	TokenType    string `json:"token_type"`
-	ExpiresIn    int    `json:"expires_in"`
-	RefreshToken string `json:"refresh_token"`
-	User         any    `json:"user"`
-}

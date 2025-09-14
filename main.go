@@ -46,11 +46,11 @@ func main() {
 		corsConfig.AllowAllOrigins = true
 	}
 
-	// router
 	router.Use(cors.New(corsConfig))
 	router.GET("/", mainHandler.MainHandler)
 	router.GET("/health", healthHandler.HealthCheck)
 	router.POST("/auth/login", authHandler.Login)
+	router.POST("/auth/register", authHandler.Register)
 
 	auth := router.Group("/")
 	auth.Use(middlewares.JWTAuthMiddleware())
