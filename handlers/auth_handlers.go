@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"api-karang-waru/requests"
 	"api-karang-waru/responses"
 	"api-karang-waru/services"
 	"net/http"
@@ -17,10 +18,7 @@ func NewAuthHandler(authService *services.AuthService) *AuthHandler {
 }
 
 func (h *AuthHandler) Login(c *gin.Context) {
-	var req struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
+	var req requests.SignInRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, responses.APIResponse{
 			Code:    "BAD_REQUEST",
@@ -44,6 +42,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	var req struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
+		Name     string `json:"name"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, responses.APIResponse{
@@ -53,7 +52,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	res, err := h.authService.SignUp(req.Email, req.Password)
+	res, err := h.authService.SignUp(req.Email, req.Password, req.Name)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, responses.APIResponse{
 			Code:    "UNAUTHORIZED",

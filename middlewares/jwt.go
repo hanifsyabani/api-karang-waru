@@ -1,60 +1,55 @@
 package middlewares
 
 import (
-	"api-karang-waru/config"
-	"api-karang-waru/responses"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// JWTAuthMiddleware untuk validasi token Supabase
-func JWTAuthMiddleware() gin.HandlerFunc {
+func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, responses.APIResponse{
-				Code: "UNAUTHORIZED",
-				Message: "Missing Authorization header",
-			})
-			c.Abort()
+		auth := c.GetHeader("Authorization")
+		if auth == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "authorization header required"})
 			return
 		}
 
-		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-		if tokenString == authHeader {
-			c.JSON(http.StatusUnauthorized, responses.APIResponse{
-				Code: "UNAUTHORIZED",
-				Message: "Invalid Authorization header format",
-			})
-			c.Abort()
+		parts := strings.SplitN(auth, " ", 2)
+		if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "authorization header format must be Bearer {token}"})
+			return
+		}
+		tokenString := parts[1]
+
+		secret := os.Getenv("JWT_SECRET")
+		if secret == "" {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "jwt secret not set"})
 			return
 		}
 
-		secret := config.GetEnv("SUPABASE_JWT_SECRET", "")
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			// verify signing method
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, jwt.ErrSignatureInvalid
+				return nil, jwt.ErrTokenInvalidSubject
 			}
 			return []byte(secret), nil
 		})
-
 		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized, responses.APIResponse{
-				Code:    "UNAUTHORIZED",
-				Message: "Invalid token",
-			})
-			c.Abort()
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
 			return
 		}
 
-		// simpan klaim ke context biar bisa dipakai di handler
-		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			c.Set("user", claims)
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token claims"})
+			return
 		}
 
+		// push claims to context
+		c.Set("claims", claims)
 		c.Next()
 	}
 }

@@ -2,81 +2,99 @@ package services
 
 import (
 	"api-karang-waru/config"
-	"api-karang-waru/requests"
+	"api-karang-waru/helpers"
+	"api-karang-waru/models"
 	"api-karang-waru/responses"
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type AuthService struct {
-	BaseURL string
-	APIKey  string
 }
 
 func NewAuthService() *AuthService {
-	return &AuthService{
-		BaseURL: config.GetEnv("SUPABASE_URL", ""),
-		APIKey:  config.GetEnv("SUPABASE_API_KEY", ""),
-	}
+	return &AuthService{}
 }
 
 func (s *AuthService) SignIn(email, password string) (*responses.SignInResponse, error) {
-	url := fmt.Sprintf("%s/auth/v1/token?grant_type=password", s.BaseURL)
+	var user models.User
+	if err := config.DB.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, fmt.Errorf("user not found")
+	}
 
-	body, _ := json.Marshal(requests.SignInRequest{
-		Email:    email,
-		Password: password,
-	})
+	hashed := helpers.CheckPasswordHash(password, user.Password)
+	if !hashed {
+		return nil, fmt.Errorf("invalid email or password")
+	}
 
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(body))
-	req.Header.Set("apikey", s.APIKey)
-	req.Header.Set("Content-Type", "application/json")
+	secret := config.GetEnv("JWT_SECRET", "")
+	if secret == "" {
+		return nil, fmt.Errorf("jwt secret not set")
+	}
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	expHours := 72
+	if v := config.GetEnv("JWT_EXPIRE_HOURS", ""); v != "" {
+		if p, err := strconv.Atoi(v); err == nil {
+			expHours = p
+		}
+	}
+
+	claims := jwt.MapClaims{
+		"sub":   user.ID,
+		"email": user.Email,
+		"exp":   time.Now().Add(time.Hour * time.Duration(expHours)).Unix(),
+		"iat":   time.Now().Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	ss, err := token.SignedString([]byte(secret))
+
 	if err != nil {
 		return nil, err
 	}
 
-	defer resp.Body.Close()
+	return &responses.SignInResponse{
+		AccessToken: ss,
+		TokenType:   "Bearer",
+		ExpiresIn:   expHours,
+		User : responses.UserResponse{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+			CreatedAt: helpers.FormatTimeHuman(user.CreatedAt),
+			UpdatedAt: helpers.FormatTimeHuman(user.UpdatedAt),
+		},
+	}, nil
 
-	var result responses.SignInResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return nil, err
-	}
-
-	if result.AccessToken == "" {
-		return nil, fmt.Errorf("login gagal: %v", resp.Status)
-	}
-
-	return &result, nil
 }
 
-func (s *AuthService) SignUp(email, password string) (*responses.SignUpResponse, error) {
-	url := fmt.Sprintf("%s/auth/v1/signup", s.BaseURL)
+func (s *AuthService) SignUp(email, password, name string) (*responses.SignUpResponse, error) {
+	var existingUser models.User
 
-	body, _ := json.Marshal(map[string] interface{}{
-		"email":    email,
-		"password": password,
-	})
+	if err := config.DB.Where("email = ?", email).First(&existingUser).Error; err == nil {
+		return nil, fmt.Errorf("user already exists")
+	}
 
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(body))
-	req.Header.Set("apikey", s.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	hashed, err := helpers.HashPassword(password)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
-	var result responses.SignUpResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	user := models.User{Name: name, Email: email, Password: hashed}
+	if err := config.DB.Create(&user).Error; err != nil {
 		return nil, err
 	}
 
-	return &result, nil
+	return &responses.SignUpResponse{
+		User: responses.UserResponse{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+			CreatedAt: helpers.FormatTimeHuman(user.CreatedAt),
+			UpdatedAt: helpers.FormatTimeHuman(user.UpdatedAt),
+		},
+	}, nil
 }

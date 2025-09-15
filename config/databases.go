@@ -12,9 +12,9 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	dsn := GetEnv("SUPABASE_DSN", "")
+	dsn := GetEnv("DATABASE_URL", "")
 	if dsn == "" {
-		log.Fatal("❌ SUPABASE_DSN tidak diset")
+		log.Fatal("Db url not found")
 	}
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -22,7 +22,7 @@ func InitDB() {
 		log.Fatal("Gagal koneksi database:", err)
 	}
 
-	fmt.Println("✅ Database terkoneksi")
+	fmt.Println("✅ DB Connected")
 
 	err = db.AutoMigrate(&models.User{})
 	if err != nil {
