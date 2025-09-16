@@ -36,6 +36,16 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie(
+		"access_token",     // nama cookie
+		res.AccessToken,    // value = token JWT
+		res.ExpiresIn*3600, // detik (jam → detik)
+		"/",                // path
+		"",                 // domain (kosong = current domain)
+		true,               // secure (harus HTTPS kalau true)
+		true,               // httpOnly (tidak bisa diakses via JS)
+	)
+
 	c.JSON(http.StatusOK, res)
 }
 func (h *AuthHandler) Register(c *gin.Context) {

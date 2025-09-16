@@ -49,10 +49,16 @@ func main() {
 	router.Use(cors.New(corsConfig))
 	router.GET("/", mainHandler.MainHandler)
 	router.GET("/health", healthHandler.HealthCheck)
-	router.POST("/auth/login", authHandler.Login)
-	router.POST("/auth/register", authHandler.Register)
 
-	auth := router.Group("/api")
+	api := router.Group("/api")
+	base_router := api.Group("/karang-waru")
+	{
+		base_router.POST("/register", authHandler.Register)
+		base_router.POST("/login", authHandler.Login)
+	}
+
+	// protected
+	auth := api.Group("/karang-waru")
 	auth.Use(middlewares.JWTAuth())
 	{
 		auth.GET("/users", userHandler.GetUsers)
