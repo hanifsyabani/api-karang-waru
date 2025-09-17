@@ -99,3 +99,5 @@ func (s *AuthService) SignUp(email, password, name string) (*responses.SignUpRes
 		},
 	}, nil
 }
+
+

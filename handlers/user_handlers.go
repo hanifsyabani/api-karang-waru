@@ -21,6 +21,7 @@ func NewUserHandler(service services.UserService) *UserHandler {
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	// UserRequest → fokus pada data yang dikirim user.
 	// models.Contact → fokus pada struktur tabel di database.
+
 	var req requests.UserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {

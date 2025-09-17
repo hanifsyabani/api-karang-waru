@@ -73,3 +73,9 @@ func (h *AuthHandler) Register(c *gin.Context) {
 
 	c.JSON(http.StatusOK, res)
 }
+
+
+func (h *AuthHandler) Logout(c *gin.Context) {
+  c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
+  c.JSON(200, gin.H{"message": "logout success"})
+}
