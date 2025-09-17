@@ -10,3 +10,4 @@ type SignInResponse struct {
 type SignUpResponse struct {
 	User UserResponse `json:"user"`
 }
+ 

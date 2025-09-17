@@ -5,7 +5,6 @@ import (
 	"api-karang-waru/models"
 )
 
-
 type APIResponse struct {
 	Code    string      `json:"code"`
 	Message string      `json:"message"`
@@ -16,19 +15,18 @@ type UserResponse struct {
 	ID        uint   `json:"id"`
 	Name      string `json:"name"`
 	Email     string `json:"email"`
+	Role      string `json:"role"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
 }
 
-
-func UserResponseFromModel(contact *models.User) UserResponse {
+func UserResponseFromModel(user *models.User) UserResponse {
 	return UserResponse{
-		ID:        contact.ID,
-		Name:      contact.Name,
-		Email:     contact.Email,
-		CreatedAt: helpers.FormatTimeHuman(contact.CreatedAt),
-		UpdatedAt: helpers.FormatTimeHuman(contact.UpdatedAt),
+		ID:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
+		Role:      user.Role,
+		CreatedAt: helpers.FormatTimeHuman(user.CreatedAt),
+		UpdatedAt: helpers.FormatTimeHuman(user.UpdatedAt),
 	}
 }
-
-
