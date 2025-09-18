@@ -4,15 +4,16 @@ import (
 	"api-karang-waru/config"
 	"api-karang-waru/helpers"
 	"api-karang-waru/models"
+	"api-karang-waru/repositories"
 	"api-karang-waru/responses"
 	"fmt"
 	"strconv"
 	"time"
-
 	"github.com/golang-jwt/jwt/v5"
 )
 
 type AuthService struct {
+	repository repositories.UserRepository
 }
 
 func NewAuthService() *AuthService {
@@ -101,3 +102,19 @@ func (s *AuthService) SignUp(email, password, name string) (*responses.SignUpRes
 }
 
 
+func (s *AuthService) GetProfile(id uint) (*responses.UserResponse, error) {
+
+	user,err := s.repository.FindByID(id)
+
+	if err != nil {
+		return nil, err
+	}
+	return &responses.UserResponse{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+		Role:  user.Role,
+		CreatedAt: helpers.FormatTimeHuman(user.CreatedAt),
+		UpdatedAt: helpers.FormatTimeHuman(user.UpdatedAt),
+	}, nil
+}

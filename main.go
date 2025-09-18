@@ -62,6 +62,7 @@ func main() {
 	auth := api.Group("/karang-waru")
 	auth.Use(middlewares.JWTAuth())
 	{
+		auth.GET("/profile", userHandler.GetProfile)
 		auth.GET("/users", userHandler.GetUsers)
 		auth.GET("/users/:id", userHandler.GetUser)
 		auth.POST("/users", userHandler.CreateUser)

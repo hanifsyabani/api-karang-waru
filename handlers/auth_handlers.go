@@ -5,6 +5,7 @@ import (
 	"api-karang-waru/responses"
 	"api-karang-waru/services"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -46,6 +47,16 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		true,               // httpOnly (tidak bisa diakses via JS)
 	)
 
+	c.SetCookie(
+		"user_id",
+		strconv.FormatUint(uint64(res.User.ID), 10),
+		res.ExpiresIn*3600,
+		"/",
+		"",
+		true,
+		true,
+	)
+
 	c.JSON(http.StatusOK, res)
 }
 func (h *AuthHandler) Register(c *gin.Context) {
@@ -74,8 +85,41 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-
 func (h *AuthHandler) Logout(c *gin.Context) {
-  c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
-  c.JSON(200, gin.H{"message": "logout success"})
+	c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
+	c.JSON(200, gin.H{"message": "logout success"})
+}
+
+func (h *UserHandler) GetProfile(c *gin.Context) {
+	id, err := c.Cookie("user_id")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, responses.APIResponse{
+			Code:    "BAD_REQUEST",
+			Message: "Invalid user ID",
+			Data:    nil,
+		})
+		return
+	}
+
+	uid, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid user_id"})
+		return
+	}
+
+	user, err := h.service.GetUserByID(uint(uid))
+	if err != nil {
+		c.JSON(http.StatusNotFound, responses.APIResponse{
+			Code:    "NOT_FOUND",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.APIResponse{
+		Code:    "OK",
+		Message: "User retrieved successfully",
+		Data:    responses.UserResponseFromModel(user),
+	})
 }

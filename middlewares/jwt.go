@@ -15,7 +15,7 @@ func JWTAuth() gin.HandlerFunc {
         if err != nil {
             c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
                 "code":    "UNAUTHORIZED",
-                "message": "Missing access token (cookie)",
+                "message": "Missing access token",
             })
             return
         }
