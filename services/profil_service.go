@@ -42,12 +42,10 @@ func (s *profilService) CreateProfil(req *requests.ProfilDesaRequest) (*models.P
 		JumlahLaki:       req.JumlahLaki,
 		JumlahPerempuan:  req.JumlahPerempuan,
 		JumlahKK:         req.JumlahKK,
-		LuasWilayahKm2:   req.LuasWilayahKm2,
-		LuasWilayahHa:    req.LuasWilayahHa,
+
 		TahunPembentukan: req.TahunPembentukan,
 		Telepon:          req.Telepon,
 		Email:            req.Email,
-		JamPelayanan:     req.JamPelayanan,
 	}
 
 	err := s.repository.CreateProfil(&profil)
@@ -77,12 +75,10 @@ func (s *profilService) UpdateProfil(req *requests.ProfilDesaRequest) (*models.P
 	profil.JumlahLaki = req.JumlahLaki
 	profil.JumlahPerempuan = req.JumlahPerempuan
 	profil.JumlahKK = req.JumlahKK
-	profil.LuasWilayahKm2 = req.LuasWilayahKm2
-	profil.LuasWilayahHa = req.LuasWilayahHa
+
 	profil.TahunPembentukan = req.TahunPembentukan
 	profil.Telepon = req.Telepon
 	profil.Email = req.Email
-	profil.JamPelayanan = req.JamPelayanan
 
 	err = s.repository.UpdateProfil(&profil)
 	return &profil, err
