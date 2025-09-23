@@ -1,7 +1,7 @@
 package config
 
 import (
-	"api-karang-waru/models"
+	// "api-karang-waru/models"
 	"fmt"
 	"log"
 
@@ -24,16 +24,16 @@ func InitDB() {
 
 	fmt.Println("✅ DB Connected")
 
-	err = db.AutoMigrate(
-		&models.User{},
-		&models.ProfilDesa{},
-		&models.BatasWilayah{},
-		&models.KomposisiPenduduk{},
-		&models.MataPencaharian{},
-		&models.FasilitasUmum{},
-	)
-	if err != nil {
-		log.Fatal("Gagal migrasi database:", err)
-	}
+	// err = db.AutoMigrate(
+	// 	&models.User{},
+	// 	&models.ProfilDesa{},
+	// 	&models.BatasWilayah{},
+	// 	&models.KomposisiPenduduk{},
+	// 	&models.MataPencaharian{},
+	// 	&models.FasilitasUmum{},
+	// )
+	// if err != nil {
+	// 	log.Fatal("Gagal migrasi database:", err)
+	// }
 	DB = db
 }
