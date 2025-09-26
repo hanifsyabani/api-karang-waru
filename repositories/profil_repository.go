@@ -25,14 +25,14 @@ func (r *profilRepository) CreateProfil(profil *models.ProfilDesa) error {
 	return r.db.Create(profil).Error
 }
 
-// []models.ProfilDesa artinya fungsi tersebut mengembalikan sebuah slice (mirip array tapi lebih fleksibel di Go) yang berisi banyak objek models.ProfilDesa.
+// []models.Demografis artinya fungsi tersebut mengembalikan sebuah slice (mirip array tapi lebih fleksibel di Go) yang berisi banyak objek models.Demografis.
 func (r *profilRepository) FindProfil() (models.ProfilDesa, error) {
 	var profil models.ProfilDesa
 	err := r.db.First(&profil).Error
 	return profil, err
 }
 
-// tidak butuh id karena langsung method Save() cari priamry key di struct models.ProfilDesa
+// tidak butuh id karena langsung method Save() cari priamry key di struct models.Demografis
 func (r *profilRepository) UpdateProfil(profil *models.ProfilDesa) error {
 	return r.db.Save(profil).Error
 }
@@ -40,3 +40,5 @@ func (r *profilRepository) UpdateProfil(profil *models.ProfilDesa) error {
 func (r *profilRepository) DeleteProfil() error {
 	return r.db.Exec("DELETE FROM profil_desa").Error
 }
+
+

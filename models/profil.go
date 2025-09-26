@@ -21,11 +21,7 @@ type ProfilDesa struct {
 	Telepon          string `gorm:"column:telepon;type:VARCHAR(20)"`
 	Email            string `gorm:"column:email;type:VARCHAR(150)"`
 
-	// Relasi
-	BatasWilayah      []BatasWilayah      `gorm:"foreignKey:ProfilDesaID"`
-	KomposisiPenduduk []KomposisiPenduduk `gorm:"foreignKey:ProfilDesaID"`
-	MataPencaharian   []MataPencaharian   `gorm:"foreignKey:ProfilDesaID"`
-	FasilitasUmum     []FasilitasUmum     `gorm:"foreignKey:ProfilDesaID"`
+	Demografis []Demografis `gorm:"foreignKey:ProfilDesaID"`
 
 	CreatedAt time.Time      `gorm:"column:created_at;type:TIMESTAMP;autoCreateTime"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;type:TIMESTAMP;autoUpdateTime"`
@@ -36,46 +32,29 @@ func (ProfilDesa) TableName() string {
 	return "profil_desa"
 }
 
-type BatasWilayah struct {
-	ID           uint   `gorm:"primaryKey;column:id"`
-	ProfilDesaID uint   `gorm:"column:profil_desa_id;type:BIGINT UNSIGNED;index"`
-	Arah         string `gorm:"column:arah;type:varchar(20);check:arah IN ('Utara','Selatan','Timur','Barat')"`
-	DesaBatas    string `gorm:"column:desa_batas;type:VARCHAR(100)"`
+type Demografis struct {
+	ID               uint   `gorm:"primaryKey;column:id"`
+	ProfilDesaID     uint   `gorm:"column:profil_desa_id;type:BIGINT UNSIGNED;index"`
+	Balita           string `gorm:"column:balita;type:VARCHAR(50)"`
+	Anak             string `gorm:"column:anak;type:VARCHAR(50)"`
+	Dewasa           string `gorm:"column:dewasa;type:VARCHAR(50)"`
+	Lansia           string `gorm:"column:lansia;type:VARCHAR(50)"`
+	Pertanian        string `gorm:"column:pertanian;type:VARCHAR(50)"`
+	Perdagangan      string `gorm:"column:perdagangan;type:VARCHAR(50)"`
+	Jasa             string `gorm:"column:jasa;type:VARCHAR(50)"`
+	Industri         string `gorm:"column:industri;type:VARCHAR(50)"`
+	Sekolah          string `gorm:"column:sekolah;type:VARCHAR(50)"`
+	Puskesmas        string `gorm:"column:puskesmas;type:VARCHAR(50)"`
+	Masjid           string `gorm:"column:masjid;type:VARCHAR(50)"`
+	PasarTradisional string `gorm:"column:pasar_tradisional;type:VARCHAR(50)"`
+	PosKeamanan      string `gorm:"column:pos_keamanan;type:VARCHAR(50)"`
+	BalaiDesa        string `gorm:"column:balai_desa;type:VARCHAR(50)"`
+
+	CreatedAt time.Time      `gorm:"column:created_at;type:TIMESTAMP;autoCreateTime"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;type:TIMESTAMP;autoUpdateTime"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;type:TIMESTAMP;index"`
 }
 
-func (BatasWilayah) TableName() string {
-	return "batas_wilayah"
-}
-
-type KomposisiPenduduk struct {
-	ID           uint   `gorm:"primaryKey;column:id"`
-	ProfilDesaID uint   `gorm:"column:profil_desa_id;type:BIGINT UNSIGNED;index"`
-	Kategori     string `gorm:"column:kategori;type:varchar(20);check:kategori IN ('Balita','Anak-anak','Dewasa','Lansia')"`
-	Jumlah       int    `gorm:"column:jumlah;type:INT"`
-}
-
-func (KomposisiPenduduk) TableName() string {
-	return "komposisi_penduduk"
-}
-
-type MataPencaharian struct {
-	ID           uint    `gorm:"primaryKey;column:id"`
-	ProfilDesaID uint    `gorm:"column:profil_desa_id;type:BIGINT UNSIGNED;index"`
-	Jenis        string  `gorm:"column:jenis;type:varchar(20);check:jenis IN ('Pertanian','Perdagangan','Jasa','Industri Kecil')"`
-	Persentase   float64 `gorm:"column:persentase;type:DECIMAL(5,2)"`
-}
-
-func (MataPencaharian) TableName() string {
-	return "mata_pencaharian"
-}
-
-type FasilitasUmum struct {
-	ID           uint   `gorm:"primaryKey;column:id"`
-	ProfilDesaID uint   `gorm:"column:profil_desa_id;type:BIGINT UNSIGNED;index"`
-	Jenis        string `gorm:"column:jenis;type:varchar(20);check:jenis IN ('Sekolah','Puskesmas','Masjid','Pasar Tradisional','Pos Keamanan','Balai Desa')"`
-	Jumlah       int    `gorm:"column:jumlah;type:INT"`
-}
-
-func (FasilitasUmum) TableName() string {
-	return "fasilitas_umum"
+func (Demografis) TableName() string {
+	return "demografis"
 }

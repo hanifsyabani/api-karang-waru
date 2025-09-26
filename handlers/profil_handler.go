@@ -116,3 +116,10 @@ func (h *ProfilDesaHandler) DeleteProfil(c *gin.Context) {
 		Data:    nil,
 	})
 }
+
+
+
+
+
+
+

@@ -10,8 +10,11 @@ import (
 
 type ProfilService interface {
 	CreateProfil(req *requests.ProfilDesaRequest) (*models.ProfilDesa, error)
+
 	GetProfil() (models.ProfilDesa, error)
+
 	UpdateProfil(req *requests.ProfilDesaRequest) (*models.ProfilDesa, error)
+
 	DeleteProfil() error
 }
 
@@ -33,15 +36,15 @@ func (s *profilService) CreateProfil(req *requests.ProfilDesaRequest) (*models.P
 	}
 
 	profil := models.ProfilDesa{
-		Alamat:           req.Alamat,
-		Kecamatan:        req.Kecamatan,
-		Kabupaten:        req.Kabupaten,
-		Provinsi:         req.Provinsi,
-		KodePos:          req.KodePos,
-		JumlahPenduduk:   req.JumlahPenduduk,
-		JumlahLaki:       req.JumlahLaki,
-		JumlahPerempuan:  req.JumlahPerempuan,
-		JumlahKK:         req.JumlahKK,
+		Alamat:          req.Alamat,
+		Kecamatan:       req.Kecamatan,
+		Kabupaten:       req.Kabupaten,
+		Provinsi:        req.Provinsi,
+		KodePos:         req.KodePos,
+		JumlahPenduduk:  req.JumlahPenduduk,
+		JumlahLaki:      req.JumlahLaki,
+		JumlahPerempuan: req.JumlahPerempuan,
+		JumlahKK:        req.JumlahKK,
 
 		TahunPembentukan: req.TahunPembentukan,
 		Telepon:          req.Telepon,
@@ -87,3 +90,5 @@ func (s *profilService) UpdateProfil(req *requests.ProfilDesaRequest) (*models.P
 func (s *profilService) DeleteProfil() error {
 	return s.repository.DeleteProfil()
 }
+
+

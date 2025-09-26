@@ -27,10 +27,7 @@ func InitDB() {
 	// err = db.AutoMigrate(
 	// 	&models.User{},
 	// 	&models.ProfilDesa{},
-	// 	&models.BatasWilayah{},
-	// 	&models.KomposisiPenduduk{},
-	// 	&models.MataPencaharian{},
-	// 	&models.FasilitasUmum{},
+	// 	&models.Demografis{},
 	// )
 	// if err != nil {
 	// 	log.Fatal("Gagal migrasi database:", err)
