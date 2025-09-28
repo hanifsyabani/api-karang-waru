@@ -3,6 +3,7 @@ package responses
 import "api-karang-waru/models"
 
 type ProfilDesaResponse struct {
+	ID              uint   `json:"id"`
 	Alamat          string `json:"alamat"`
 	Kecamatan       string `json:"kecamatan"`
 	Kabupaten       string `json:"kabupaten"`
@@ -20,6 +21,7 @@ type ProfilDesaResponse struct {
 
 func ProfilResponseFromModel(profil *models.ProfilDesa) ProfilDesaResponse {
 	return ProfilDesaResponse{
+		ID:              profil.ID,
 		Alamat:          profil.Alamat,
 		Kecamatan:       profil.Kecamatan,
 		Kabupaten:       profil.Kabupaten,
@@ -37,6 +39,7 @@ func ProfilResponseFromModel(profil *models.ProfilDesa) ProfilDesaResponse {
 }
 
 type DemografisResponse struct {
+	ProfilDesaID     uint   `json:"profil_desa_id"`
 	Balita           string `json:"balita"`
 	Anak             string `json:"anak"`
 	Dewasa           string `json:"dewasa"`
@@ -55,15 +58,16 @@ type DemografisResponse struct {
 
 func DemografisResponseFromModel(profil *models.Demografis) DemografisResponse {
 	return DemografisResponse{
+		ProfilDesaID:     profil.ProfilDesaID,
 		Balita:           profil.Balita,
 		Anak:             profil.Anak,
 		Dewasa:           profil.Dewasa,
-		Lansia: 		 profil.Lansia,
+		Lansia:           profil.Lansia,
 		Pertanian:        profil.Pertanian,
 		Perdagangan:      profil.Perdagangan,
 		Jasa:             profil.Jasa,
 		Industri:         profil.Industri,
-		Sekolah:          profil.Sekolah,	
+		Sekolah:          profil.Sekolah,
 		Puskesmas:        profil.Puskesmas,
 		Masjid:           profil.Masjid,
 		PasarTradisional: profil.PasarTradisional,

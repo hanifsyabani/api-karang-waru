@@ -33,6 +33,7 @@ func (s *demografisService) CreateDemografis(req *requests.DemografisRequest) (*
 	}
 
 	demografis := models.Demografis{
+		ProfilDesaID:     req.ProfilDesaID,
 		Balita:           req.Balita,
 		Anak:             req.Anak,
 		Dewasa:           req.Dewasa,
@@ -67,6 +68,7 @@ func (s *demografisService) UpdateDemografis(req *requests.DemografisRequest) (*
 		return nil, err
 	}
 
+	demografis.ProfilDesaID = req.ProfilDesaID
 	demografis.Balita = req.Balita
 	demografis.Anak = req.Anak
 	demografis.Dewasa = req.Dewasa

@@ -16,6 +16,7 @@ type ProfilDesaRequest struct {
 	Email            string `json:"email"`
 }
 type DemografisRequest struct {
+    ProfilDesaID     uint   `json:"profil_desa_id" binding:"required"`
     Balita           string `json:"balita"`
     Anak             string `json:"anak"`
     Dewasa           string `json:"dewasa"`
