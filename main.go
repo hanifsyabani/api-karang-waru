@@ -28,16 +28,19 @@ func main() {
 	userRepository := repositories.NewUserRepository(config.DB)
 	profilRepository := repositories.NewProfilRepository(config.DB)
 	demografisRepository := repositories.NewDemografisRepository(config.DB)
+	sejarahRepository := repositories.NewSejarahRepository(config.DB)
 
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService()
 	profilService := services.NewProfilService(profilRepository)
 	demografisService := services.NewDemografisService(demografisRepository)
+	sejarahService := services.NewSejarahService(sejarahRepository)
 
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(authService)
 	profilHandler := handlers.NewProfilDesaHandler(profilService)
 	demografisHandler := handlers.NewDemografisHandler(demografisService)
+	sejarahHandler := handlers.NewSejarahHandler(sejarahService)
 
 	router := gin.Default()
 
@@ -84,6 +87,10 @@ func main() {
 		auth.POST("/demografis", demografisHandler.CreateDemografis)
 		auth.PUT("/demografis", demografisHandler.UpdateDemografis)
 		auth.DELETE("/demografis", demografisHandler.DeleteDemografis)
+		auth.GET("/sejarah", sejarahHandler.GetSejarah)
+		auth.POST("/sejarah", sejarahHandler.CreateSejarah)
+		auth.PUT("/sejarah", sejarahHandler.UpdateSejarah)
+		auth.DELETE("/sejarah", sejarahHandler.DeleteSejarah)
 	}
 
 	appPort := config.GetEnv("APP_PORT", "8080")

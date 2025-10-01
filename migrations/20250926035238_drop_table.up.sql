@@ -1,4 +1,0 @@
-DROP TABLE IF EXISTS batas_wilayah CASCADE;
-DROP TABLE IF EXISTS fasilitas_umum CASCADE;
-DROP TABLE IF EXISTS komposisi_penduduk CASCADE;
-DROP TABLE IF EXISTS mata_pencaharian CASCADE;

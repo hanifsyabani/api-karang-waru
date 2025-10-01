@@ -28,9 +28,10 @@ func InitDB() {
 	// 	&models.User{},
 	// 	&models.ProfilDesa{},
 	// 	&models.Demografis{},
+	// 	// &models.Sejarah{},
 	// )
-	// if err != nil {
-	// 	log.Fatal("Gagal migrasi database:", err)
-	// }
+	if err != nil {
+		log.Fatal("Gagal migrasi database:", err)
+	}
 	DB = db
 }

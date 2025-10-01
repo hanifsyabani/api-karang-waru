@@ -33,3 +33,8 @@ type DemografisRequest struct {
     BalaiDesa        string `json:"balai_desa"`
 }
 
+type SejarahRequest struct {
+    ProfilDesaID uint   `json:"profil_desa_id" binding:"required"`
+    Body         string `json:"body"`
+}
+

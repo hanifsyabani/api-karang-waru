@@ -22,6 +22,7 @@ type ProfilDesa struct {
 	Email            string `gorm:"column:email;type:VARCHAR(150)"`
 
 	Demografis []Demografis `gorm:"foreignKey:ProfilDesaID"`
+	Sejarah    []Sejarah    `gorm:"foreignKey:ProfilDesaID"`
 
 	CreatedAt time.Time      `gorm:"column:created_at;type:TIMESTAMP;autoCreateTime"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;type:TIMESTAMP;autoUpdateTime"`
@@ -34,7 +35,7 @@ func (ProfilDesa) TableName() string {
 
 type Demografis struct {
 	ID               uint   `gorm:"primaryKey;column:id"`
-	ProfilDesaID     uint   `gorm:"column:profil_desa_id;type:BIGINT UNSIGNED;index"`
+	ProfilDesaID     uint  `gorm:"column:profil_desa_id;type:BIGINT;index"`
 	Balita           string `gorm:"column:balita;type:VARCHAR(50)"`
 	Anak             string `gorm:"column:anak;type:VARCHAR(50)"`
 	Dewasa           string `gorm:"column:dewasa;type:VARCHAR(50)"`
@@ -57,4 +58,18 @@ type Demografis struct {
 
 func (Demografis) TableName() string {
 	return "demografis"
+}
+
+type Sejarah struct {
+	ID           uint   `gorm:"primaryKey;column:id"`
+	ProfilDesaID uint  `gorm:"column:profil_desa_id;type:BIGINT;index"`
+	Body         string `gorm:"column:body;type:TEXT"`
+
+	CreatedAt time.Time      `gorm:"column:created_at;type:TIMESTAMP;autoCreateTime"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;type:TIMESTAMP;autoUpdateTime"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;type:TIMESTAMP;index"`
+}
+
+func (Sejarah) TableName() string {
+	return "sejarah"
 }

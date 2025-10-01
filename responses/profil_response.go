@@ -75,3 +75,15 @@ func DemografisResponseFromModel(profil *models.Demografis) DemografisResponse {
 		BalaiDesa:        profil.BalaiDesa,
 	}
 }
+
+type SejarahResponse struct {
+	ProfilDesaID     uint   `json:"profil_desa_id"`
+	Body             string `json:"body"`
+}
+
+func SejarahResponseFromModel(sejarah *models.Sejarah) SejarahResponse {
+	return SejarahResponse{
+		ProfilDesaID:     sejarah.ProfilDesaID,
+		Body:             sejarah.Body,
+	}
+}
