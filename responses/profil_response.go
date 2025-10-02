@@ -87,3 +87,17 @@ func SejarahResponseFromModel(sejarah *models.Sejarah) SejarahResponse {
 		Body:             sejarah.Body,
 	}
 }
+
+type VisiMisiResponse struct {
+	ProfilDesaID     uint   `json:"profil_desa_id"`
+	Visi             string `json:"visi"`
+	Misi             string `json:"misi"`
+}
+
+func VisiMisiResponseFromModel(visiMisi *models.VisiMisi) VisiMisiResponse {
+	return VisiMisiResponse{
+		ProfilDesaID:     visiMisi.ProfilDesaID,
+		Visi:             visiMisi.Visi,
+		Misi:             visiMisi.Misi,	
+	}
+}

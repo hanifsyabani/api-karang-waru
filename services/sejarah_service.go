@@ -34,7 +34,7 @@ func (s *sejarahService) CreateSejarah(req *requests.SejarahRequest) (*models.Se
 
 	sejarah := models.Sejarah{
 		ProfilDesaID: req.ProfilDesaID,
-
+		Body:         req.Body,
 	}
 
 	err := s.repository.CreateSejarah(&sejarah)

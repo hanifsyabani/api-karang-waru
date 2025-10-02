@@ -29,18 +29,21 @@ func main() {
 	profilRepository := repositories.NewProfilRepository(config.DB)
 	demografisRepository := repositories.NewDemografisRepository(config.DB)
 	sejarahRepository := repositories.NewSejarahRepository(config.DB)
+	visiMisiRepository := repositories.NewVisiMisiRepository(config.DB)
 
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService()
 	profilService := services.NewProfilService(profilRepository)
 	demografisService := services.NewDemografisService(demografisRepository)
 	sejarahService := services.NewSejarahService(sejarahRepository)
+	visiMisiService := services.NewVisiMisiService(visiMisiRepository)
 
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(authService)
 	profilHandler := handlers.NewProfilDesaHandler(profilService)
 	demografisHandler := handlers.NewDemografisHandler(demografisService)
 	sejarahHandler := handlers.NewSejarahHandler(sejarahService)
+	visiMisiHandler := handlers.NewVisiMisiHandler(visiMisiService)
 
 	router := gin.Default()
 
@@ -91,6 +94,10 @@ func main() {
 		auth.POST("/sejarah", sejarahHandler.CreateSejarah)
 		auth.PUT("/sejarah", sejarahHandler.UpdateSejarah)
 		auth.DELETE("/sejarah", sejarahHandler.DeleteSejarah)
+		auth.GET("/visi-misi", visiMisiHandler.GetVisiMisi)
+		auth.POST("/visi-misi", visiMisiHandler.CreateVisiMisi)
+		auth.PUT("/visi-misi", visiMisiHandler.UpdateVisiMisi)
+		auth.DELETE("/visi-misi", visiMisiHandler.DeleteVisiMisi)
 	}
 
 	appPort := config.GetEnv("APP_PORT", "8080")

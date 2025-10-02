@@ -23,6 +23,7 @@ type ProfilDesa struct {
 
 	Demografis []Demografis `gorm:"foreignKey:ProfilDesaID"`
 	Sejarah    []Sejarah    `gorm:"foreignKey:ProfilDesaID"`
+	VisiMisi   []VisiMisi   `gorm:"foreignKey:ProfilDesaID"`
 
 	CreatedAt time.Time      `gorm:"column:created_at;type:TIMESTAMP;autoCreateTime"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;type:TIMESTAMP;autoUpdateTime"`
@@ -35,7 +36,7 @@ func (ProfilDesa) TableName() string {
 
 type Demografis struct {
 	ID               uint   `gorm:"primaryKey;column:id"`
-	ProfilDesaID     uint  `gorm:"column:profil_desa_id;type:BIGINT;index"`
+	ProfilDesaID     uint   `gorm:"column:profil_desa_id;type:BIGINT;index"`
 	Balita           string `gorm:"column:balita;type:VARCHAR(50)"`
 	Anak             string `gorm:"column:anak;type:VARCHAR(50)"`
 	Dewasa           string `gorm:"column:dewasa;type:VARCHAR(50)"`
@@ -62,7 +63,7 @@ func (Demografis) TableName() string {
 
 type Sejarah struct {
 	ID           uint   `gorm:"primaryKey;column:id"`
-	ProfilDesaID uint  `gorm:"column:profil_desa_id;type:BIGINT;index"`
+	ProfilDesaID uint   `gorm:"column:profil_desa_id;type:BIGINT;index"`
 	Body         string `gorm:"column:body;type:TEXT"`
 
 	CreatedAt time.Time      `gorm:"column:created_at;type:TIMESTAMP;autoCreateTime"`
@@ -72,4 +73,19 @@ type Sejarah struct {
 
 func (Sejarah) TableName() string {
 	return "sejarah"
+}
+
+type VisiMisi struct {
+	ID           uint   `gorm:"primaryKey;column:id"`
+	ProfilDesaID uint   `gorm:"column:profil_desa_id;type:BIGINT;index"`
+	Visi         string `gorm:"column:visi;type:TEXT"`
+	Misi         string `gorm:"column:misi;type:TEXT"`
+
+	CreatedAt time.Time      `gorm:"column:created_at;type:TIMESTAMP;autoCreateTime"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;type:TIMESTAMP;autoUpdateTime"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;type:TIMESTAMP;index"`
+}
+
+func (VisiMisi) TableName() string {
+	return "visi_misi"
 }

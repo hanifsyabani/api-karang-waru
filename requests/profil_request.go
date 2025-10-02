@@ -35,6 +35,12 @@ type DemografisRequest struct {
 
 type SejarahRequest struct {
     ProfilDesaID uint   `json:"profil_desa_id" binding:"required"`
-    Body         string `json:"body"`
-}
+    Body         string `json:"body" binding:"required"`
+} 
 
+
+type VisiMisiRequest struct {
+    ProfilDesaID uint   `json:"profil_desa_id" binding:"required"`
+    Visi        string `json:"visi" binding:"required"`
+    Misi        string `json:"misi" binding:"required"`
+}
