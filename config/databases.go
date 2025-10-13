@@ -25,7 +25,7 @@ func InitDB() {
 	fmt.Println("✅ DB Connected")
 
 	// err = db.AutoMigrate(
-	// 	&models.Berita{},
+	// 	&models.Umkm{},
 
 	// )
 	// if err != nil {

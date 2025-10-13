@@ -30,13 +30,13 @@ func (r *beritaRepository) CreateBerita(berita *models.Berita) error {
 // []models.Demografis artinya fungsi tersebut mengembalikan sebuah slice (mirip array tapi lebih fleksibel di Go) yang berisi banyak objek models.Demografis.
 func (r *beritaRepository) FindBerita() ([]models.Berita, error) {
 	var berita []models.Berita
-	err := r.db.First(&berita).Error
+	err := r.db.Find(&berita).Error
 	return berita, err
 }
 
 func (r *beritaRepository) FindBeritaByID(id uint) (*models.Berita, error) {
 	var berita models.Berita
-	err := r.db.First(&berita, id).Error
+	err := r.db.Find(&berita, id).Error
 	return &berita, err
 }
 

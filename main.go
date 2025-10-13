@@ -31,6 +31,7 @@ func main() {
 	sejarahRepository := repositories.NewSejarahRepository(config.DB)
 	visiMisiRepository := repositories.NewVisiMisiRepository(config.DB)
 	beritaRepository := repositories.NewBeritaRepository(config.DB)
+	umkmRepository := repositories.NewUmkmRepository(config.DB)
 
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService()
@@ -39,6 +40,7 @@ func main() {
 	sejarahService := services.NewSejarahService(sejarahRepository)
 	visiMisiService := services.NewVisiMisiService(visiMisiRepository)
 	beritaService := services.NewBeritaService(beritaRepository)
+	umkmService := services.NewUmkmService(umkmRepository)
 
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(authService)
@@ -47,6 +49,7 @@ func main() {
 	sejarahHandler := handlers.NewSejarahHandler(sejarahService)
 	visiMisiHandler := handlers.NewVisiMisiHandler(visiMisiService)
 	beritaHandler := handlers.NewBeritaHandler(beritaService)
+	umkmHandler := handlers.NewUmkmHandler(umkmService)
 
 	router := gin.Default()
 
@@ -103,9 +106,16 @@ func main() {
 		auth.DELETE("/visi-misi", visiMisiHandler.DeleteVisiMisi)
 		auth.GET("/berita", beritaHandler.GetBerita)
 		auth.GET("/berita/:id", beritaHandler.GetBeritaByID)
+		auth.GET("/berita/slug/:slug", beritaHandler.GetBeritaBySlug)
 		auth.POST("/berita", beritaHandler.CreateBerita)
 		auth.PUT("/berita/:id", beritaHandler.UpdateBerita)
 		auth.DELETE("/berita/:id", beritaHandler.DeleteBerita)
+		auth.GET("/umkm", umkmHandler.GetAllUmkm)
+		auth.GET("/umkm/:id", umkmHandler.GetUmkmByID)
+		auth.GET("/umkm/slug/:slug", umkmHandler.GetUmkmBySlug)
+		auth.POST("/umkm", umkmHandler.CreateUmkm)
+		auth.PUT("/umkm/:id", umkmHandler.UpdateUmkm)
+		auth.DELETE("/umkm/:id", umkmHandler.DeleteUmkm)
 	}
 
 	appPort := config.GetEnv("APP_PORT", "8080")
