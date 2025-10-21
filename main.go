@@ -32,6 +32,7 @@ func main() {
 	visiMisiRepository := repositories.NewVisiMisiRepository(config.DB)
 	beritaRepository := repositories.NewBeritaRepository(config.DB)
 	umkmRepository := repositories.NewUmkmRepository(config.DB)
+	layananRepository := repositories.NewLayananRepository(config.DB)
 
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService()
@@ -41,6 +42,7 @@ func main() {
 	visiMisiService := services.NewVisiMisiService(visiMisiRepository)
 	beritaService := services.NewBeritaService(beritaRepository)
 	umkmService := services.NewUmkmService(umkmRepository)
+	layananService := services.NewLayananService(layananRepository)
 
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(authService)
@@ -50,6 +52,7 @@ func main() {
 	visiMisiHandler := handlers.NewVisiMisiHandler(visiMisiService)
 	beritaHandler := handlers.NewBeritaHandler(beritaService)
 	umkmHandler := handlers.NewUmkmHandler(umkmService)
+	layananHandler := handlers.NewLayananHandler(layananService)
 
 	router := gin.Default()
 
@@ -116,6 +119,12 @@ func main() {
 		auth.POST("/umkm", umkmHandler.CreateUmkm)
 		auth.PUT("/umkm/:id", umkmHandler.UpdateUmkm)
 		auth.DELETE("/umkm/:id", umkmHandler.DeleteUmkm)
+		auth.GET("/layanan", layananHandler.GetAllLayanan)
+		auth.GET("/layanan/:id", layananHandler.GetLayananByID)
+		auth.GET("/layanan/slug/:slug", layananHandler.GetLayananBySlug)
+		auth.POST("/layanan", layananHandler.CreateLayanan)
+		auth.PUT("/layanan/:id", layananHandler.UpdateLayanan)
+		auth.DELETE("/layanan/:id", layananHandler.DeleteLayanan)
 	}
 
 	appPort := config.GetEnv("APP_PORT", "8080")
