@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	Create(user *models.User) error
 	FindAll() ([]models.User, error)
+	FindByEmail(email string) (*models.User, error)
 	FindByID(id uint) (*models.User, error)
 	Update(user *models.User) error
 	Delete(user *models.User) error
@@ -31,6 +32,12 @@ func (r *userRepository) FindAll() ([]models.User, error) {
 	var users []models.User
 	err := r.db.Find(&users).Error
 	return users, err	
+}
+
+func (r *userRepository) FindByEmail(email string) (*models.User, error) {
+	var user models.User
+	err := r.db.Where("email = ?", email).First(&user).Error
+	return &user, err
 }
 
 // *models.User, error mengembalikan satu data User dalam bentuk pointer, plus error

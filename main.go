@@ -33,6 +33,7 @@ func main() {
 	beritaRepository := repositories.NewBeritaRepository(config.DB)
 	umkmRepository := repositories.NewUmkmRepository(config.DB)
 	layananRepository := repositories.NewLayananRepository(config.DB)
+	apbdRepository := repositories.NewApbdRepository(config.DB)
 
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService()
@@ -43,6 +44,7 @@ func main() {
 	beritaService := services.NewBeritaService(beritaRepository)
 	umkmService := services.NewUmkmService(umkmRepository)
 	layananService := services.NewLayananService(layananRepository)
+	apbdService := services.NewApbdService(apbdRepository)
 
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(authService)
@@ -53,6 +55,8 @@ func main() {
 	beritaHandler := handlers.NewBeritaHandler(beritaService)
 	umkmHandler := handlers.NewUmkmHandler(umkmService)
 	layananHandler := handlers.NewLayananHandler(layananService)
+	apbdHandler := handlers.NewApbdHandler(apbdService)
+
 
 	router := gin.Default()
 
@@ -125,6 +129,11 @@ func main() {
 		auth.POST("/layanan", layananHandler.CreateLayanan)
 		auth.PUT("/layanan/:id", layananHandler.UpdateLayanan)
 		auth.DELETE("/layanan/:id", layananHandler.DeleteLayanan)
+		auth.GET("/apbd", apbdHandler.GetApbd)
+		auth.GET("/apbd/:id", apbdHandler.GetApbdByID)
+		auth.POST("/apbd", apbdHandler.CreateApbd)
+		auth.PUT("/apbd/:id", apbdHandler.UpdateApbd)
+		auth.DELETE("/apbd/:id", apbdHandler.DeleteApbd)
 	}
 
 	appPort := config.GetEnv("APP_PORT", "8080")

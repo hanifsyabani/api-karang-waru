@@ -33,6 +33,11 @@ func (s *userService) CreateUser(req *requests.UserRequest) (*models.User,error)
 		return nil, err
 	}
 
+	_, err := s.repository.FindByEmail(req.Email)
+	if err == nil {
+		return nil, err
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err !=nil {
 		return nil, err
