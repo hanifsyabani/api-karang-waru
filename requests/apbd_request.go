@@ -2,7 +2,7 @@ package requests
 
 // ApbdRequest digunakan untuk menerima input data APBD Desa dari user (misal via JSON request)
 type ApbdRequest struct {
-	Tahun int `json:"tahun" binding:"required"`
+	Tahun string `json:"tahun" binding:"required"`
 
 	// Pendapatan Desa
 	PendapatanAsliDesa float64 `json:"pendapatan_asli_desa"`
@@ -20,10 +20,6 @@ type ApbdRequest struct {
 	PenerimaanPembiayaan  float64 `json:"penerimaan_pembiayaan"`
 	PengeluaranPembiayaan float64 `json:"pengeluaran_pembiayaan"`
 
-	// Total dan Status
-	TotalPendapatan float64 `json:"total_pendapatan"`
-	TotalBelanja    float64 `json:"total_belanja"`
-	SurplusDefisit  float64 `json:"surplus_defisit"`
 	Status          string  `json:"status"`
 
 	// Metadata

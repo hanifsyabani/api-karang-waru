@@ -10,7 +10,6 @@ type ApbdDesaRepository interface {
 	CreateApbd(apbd *models.APBDDesa) error
 	FindApbd() ([]models.APBDDesa, error)
 	FindApbdByID(id uint) (*models.APBDDesa, error)
-	FindApbdBySlug(slug string) (*models.APBDDesa, error)
 	UpdateApbd(apbd *models.APBDDesa) error
 	DeleteApbd(apbd *models.APBDDesa) error
 }
@@ -40,11 +39,6 @@ func (r *apbdRepository) FindApbdByID(id uint) (*models.APBDDesa, error) {
 	return &apbd, err
 }
 
-func (r *apbdRepository) FindApbdBySlug(slug string) (*models.APBDDesa, error) {
-	var apbd models.APBDDesa
-	err := r.db.Where("slug = ?", slug).First(&apbd).Error
-	return &apbd, err
-}
 
 // tidak butuh id karena langsung method Save() cari priamry key di struct models.ProfilDesa
 func (r *apbdRepository) UpdateApbd(apbd *models.APBDDesa) error {

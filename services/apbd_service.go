@@ -33,6 +33,11 @@ func (s *apbdService) CreateApbd(req *requests.ApbdRequest) (*models.APBDDesa, e
 		return nil, err
 	}
 
+	totalBelanja := req.BelanjaPenyelenggaraanPemerintahan + req.BelanjaPembangunan + req.BelanjaPembinaanKemasyarakatan + req.BelanjaPemberdayaanMasyarakat + req.BelanjaTakTerduga
+	totalPendapatan := req.PendapatanAsliDesa + req.Transfer + req.PendapatanLain
+	surplus := totalPendapatan - totalBelanja
+
+
 	apbd := models.APBDDesa{
 		Tahun:                              req.Tahun,
 		PendapatanAsliDesa:                 req.PendapatanAsliDesa,
@@ -45,9 +50,11 @@ func (s *apbdService) CreateApbd(req *requests.ApbdRequest) (*models.APBDDesa, e
 		BelanjaTakTerduga:                  req.BelanjaTakTerduga,
 		PenerimaanPembiayaan:               req.PenerimaanPembiayaan,
 		PengeluaranPembiayaan:              req.PengeluaranPembiayaan,
-		TotalPendapatan:                    req.TotalPendapatan,
-		TotalBelanja:                       req.TotalBelanja,
-		SurplusDefisit:                     req.SurplusDefisit,
+
+		
+		TotalPendapatan:                    totalPendapatan,
+		TotalBelanja:                       totalBelanja,
+		SurplusDefisit:                     surplus,
 		Status:                             req.Status,
 		Keterangan:                         req.Keterangan,
 		FileLampiran:                       req.FileLampiran,
@@ -86,9 +93,16 @@ func (s *apbdService) UpdateApbd(id uint, req *requests.ApbdRequest) (*models.AP
 	apbd.BelanjaTakTerduga = req.BelanjaTakTerduga
 	apbd.PenerimaanPembiayaan = req.PenerimaanPembiayaan
 	apbd.PengeluaranPembiayaan = req.PengeluaranPembiayaan
-	apbd.TotalPendapatan = req.TotalPendapatan
-	apbd.TotalBelanja = req.TotalBelanja
-	apbd.SurplusDefisit = req.SurplusDefisit
+
+
+	// calc totalBelanja
+	totalBelanja := apbd.BelanjaPenyelenggaraanPemerintahan + apbd.BelanjaPembangunan + apbd.BelanjaPembinaanKemasyarakatan + apbd.BelanjaPemberdayaanMasyarakat + apbd.BelanjaTakTerduga
+	totalPendapatan := apbd.PendapatanAsliDesa + apbd.Transfer + apbd.PendapatanLain
+	surplus := totalPendapatan - totalBelanja
+
+	apbd.TotalPendapatan = totalPendapatan
+	apbd.TotalBelanja = totalBelanja
+	apbd.SurplusDefisit = surplus
 	apbd.Status = req.Status
 	apbd.Keterangan = req.Keterangan
 	apbd.FileLampiran = req.FileLampiran

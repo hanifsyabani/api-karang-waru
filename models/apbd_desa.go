@@ -11,7 +11,7 @@ type APBDDesa struct {
 	ID uint `gorm:"primaryKey;column:id"`
 
 	// Tahun Anggaran (contoh: 2024)
-	Tahun int `gorm:"column:tahun;type:INT;not null;index"`
+	Tahun string `gorm:"column:tahun;type:VARCHAR(4);not null;index"`
 
 	PendapatanAsliDesa float64 `gorm:"column:pendapatan_asli_desa;type:DECIMAL(15,2);default:0"` // PAD
 	Transfer           float64 `gorm:"column:transfer;type:DECIMAL(15,2);default:0"`             // Dana transfer dari pusat/provinsi/kabupaten

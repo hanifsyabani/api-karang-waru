@@ -6,7 +6,7 @@ import (
 
 type ApbdResponse struct {
 	ID    uint `json:"id"`
-	Tahun int  `json:"tahun"`
+	Tahun string  `json:"tahun"`
 
 	// Pendapatan Desa
 	PendapatanAsliDesa float64 `json:"pendapatan_asli_desa"`
