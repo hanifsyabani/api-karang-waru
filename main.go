@@ -34,6 +34,7 @@ func main() {
 	umkmRepository := repositories.NewUmkmRepository(config.DB)
 	layananRepository := repositories.NewLayananRepository(config.DB)
 	apbdRepository := repositories.NewApbdRepository(config.DB)
+	pendudukRepository := repositories.NewPendudukRepository(config.DB)
 
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService()
@@ -45,6 +46,7 @@ func main() {
 	umkmService := services.NewUmkmService(umkmRepository)
 	layananService := services.NewLayananService(layananRepository)
 	apbdService := services.NewApbdService(apbdRepository)
+	pendudukService := services.NewPendudukService(pendudukRepository)
 
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(authService)
@@ -56,6 +58,7 @@ func main() {
 	umkmHandler := handlers.NewUmkmHandler(umkmService)
 	layananHandler := handlers.NewLayananHandler(layananService)
 	apbdHandler := handlers.NewApbdHandler(apbdService)
+	pendudukHandler := handlers.NewPendudukHandler(pendudukService)
 
 
 	router := gin.Default()
@@ -134,6 +137,11 @@ func main() {
 		auth.POST("/apbd", apbdHandler.CreateApbd)
 		auth.PUT("/apbd/:id", apbdHandler.UpdateApbd)
 		auth.DELETE("/apbd/:id", apbdHandler.DeleteApbd)
+		auth.GET("/penduduk", pendudukHandler.GetAllPenduduk)
+		auth.GET("/penduduk/:id", pendudukHandler.GetPendudukByID)
+		auth.POST("/penduduk", pendudukHandler.CreatePenduduk)
+		auth.PUT("/penduduk/:id", pendudukHandler.UpdatePenduduk)
+		auth.DELETE("/penduduk/:id", pendudukHandler.DeletePenduduk)
 	}
 
 	appPort := config.GetEnv("APP_PORT", "8080")
