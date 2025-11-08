@@ -10,6 +10,7 @@ type PendudukRepository interface {
 	CreatePenduduk(penduduk *models.Penduduk) error
 	FindPenduduk() ([]models.Penduduk, error)
 	FindPendudukByID(id uint) (*models.Penduduk, error)
+	IsNIKExists(nik string) (bool, error)
 	UpdatePenduduk(penduduk *models.Penduduk) error
 	DeletePenduduk(penduduk *models.Penduduk) error
 }
@@ -38,6 +39,18 @@ func (r *pendudukRepository) FindPendudukByID(id uint) (*models.Penduduk, error)
 	err := r.db.Find(&penduduk, id).Error
 	return &penduduk, err
 }
+
+func (r *pendudukRepository) IsNIKExists(nik string) (bool, error) {
+	var count int64
+	err := r.db.Model(&models.Penduduk{}).
+		Where("nik = ? AND deleted_at IS NULL", nik).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
 
 
 // tidak butuh id karena langsung method Save() cari priamry key di struct models.ProfilDesa

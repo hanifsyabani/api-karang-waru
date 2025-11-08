@@ -23,3 +23,14 @@ func init() {
 func FormatTimeHuman(t time.Time) string {
 	return  t.In(appTimezone).Format("2006-01-02 15:04:05")
 }
+
+func ParseTimeHuman(dateStr string) (time.Time, error) {
+	if dateStr == "" {
+		return time.Time{}, nil
+	}
+	t, err := time.ParseInLocation("2006-01-02", dateStr, appTimezone)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return t, nil
+}

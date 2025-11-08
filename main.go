@@ -35,6 +35,7 @@ func main() {
 	layananRepository := repositories.NewLayananRepository(config.DB)
 	apbdRepository := repositories.NewApbdRepository(config.DB)
 	pendudukRepository := repositories.NewPendudukRepository(config.DB)
+	pendidikanRepository := repositories.NewPendidikanRepository(config.DB)
 
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService()
@@ -47,6 +48,7 @@ func main() {
 	layananService := services.NewLayananService(layananRepository)
 	apbdService := services.NewApbdService(apbdRepository)
 	pendudukService := services.NewPendudukService(pendudukRepository)
+	pendidikanService := services.NewPendidikanService(pendidikanRepository)
 
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(authService)
@@ -59,7 +61,7 @@ func main() {
 	layananHandler := handlers.NewLayananHandler(layananService)
 	apbdHandler := handlers.NewApbdHandler(apbdService)
 	pendudukHandler := handlers.NewPendudukHandler(pendudukService)
-
+	pendidikanHandler := handlers.NewPendidikanHandler(pendidikanService)
 
 	router := gin.Default()
 
@@ -142,6 +144,41 @@ func main() {
 		auth.POST("/penduduk", pendudukHandler.CreatePenduduk)
 		auth.PUT("/penduduk/:id", pendudukHandler.UpdatePenduduk)
 		auth.DELETE("/penduduk/:id", pendudukHandler.DeletePenduduk)
+		// Pendidikan - Program
+		auth.GET("/pendidikan/program", pendidikanHandler.GetAllProgram)
+		auth.GET("/pendidikan/program/:id", pendidikanHandler.GetProgramByID)
+		auth.POST("/pendidikan/program", pendidikanHandler.CreateProgram)
+		auth.PUT("/pendidikan/program/:id", pendidikanHandler.UpdateProgram)
+		auth.DELETE("/pendidikan/program/:id", pendidikanHandler.DeleteProgram)
+
+		// Pendidikan - Lembaga
+		auth.GET("/pendidikan/lembaga", pendidikanHandler.GetAllLembaga)
+		auth.GET("/pendidikan/lembaga/:id", pendidikanHandler.GetLembagaByID)
+		auth.POST("/pendidikan/lembaga", pendidikanHandler.CreateLembaga)
+		auth.PUT("/pendidikan/lembaga/:id", pendidikanHandler.UpdateLembaga)
+		auth.DELETE("/pendidikan/lembaga/:id", pendidikanHandler.DeleteLembaga)
+
+		// Pendidikan - Statistik
+		auth.GET("/pendidikan/statistik", pendidikanHandler.GetAllStatistik)
+		auth.GET("/pendidikan/statistik/:id", pendidikanHandler.GetStatistikByID)
+		auth.POST("/pendidikan/statistik", pendidikanHandler.CreateStatistik)
+		auth.PUT("/pendidikan/statistik/:id", pendidikanHandler.UpdateStatistik)
+		auth.DELETE("/pendidikan/statistik/:id", pendidikanHandler.DeleteStatistik)
+
+		// Pendidikan - Capaian
+		auth.GET("/pendidikan/capaian", pendidikanHandler.GetAllCapaian)
+		auth.GET("/pendidikan/capaian/:id", pendidikanHandler.GetCapaianByID)
+		auth.POST("/pendidikan/capaian", pendidikanHandler.CreateCapaian)
+		auth.PUT("/pendidikan/capaian/:id", pendidikanHandler.UpdateCapaian)
+		auth.DELETE("/pendidikan/capaian/:id", pendidikanHandler.DeleteCapaian)
+
+		// Pendidikan - Dokumentasi
+		auth.GET("/pendidikan/dokumentasi", pendidikanHandler.GetAllDokumentasi)
+		auth.GET("/pendidikan/dokumentasi/:id", pendidikanHandler.GetDokumentasiByID)
+		auth.POST("/pendidikan/dokumentasi", pendidikanHandler.CreateDokumentasi)
+		auth.PUT("/pendidikan/dokumentasi/:id", pendidikanHandler.UpdateDokumentasi)
+		auth.DELETE("/pendidikan/dokumentasi/:id", pendidikanHandler.DeleteDokumentasi)
+
 	}
 
 	appPort := config.GetEnv("APP_PORT", "8080")

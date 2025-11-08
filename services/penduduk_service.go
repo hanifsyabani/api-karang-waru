@@ -1,12 +1,12 @@
 package services
 
 import (
+	customErr "api-karang-waru/errors"
 	"api-karang-waru/models"
 	"api-karang-waru/repositories"
 	"api-karang-waru/requests"
-	"time"
-
 	"github.com/go-playground/validator/v10"
+	"time"
 )
 
 type PendudukService interface {
@@ -38,6 +38,14 @@ func (s *pendudukService) CreatePenduduk(req *requests.PendudukRequest) (*models
 		return nil, err
 	}
 
+	exists, err := s.repository.IsNIKExists(req.NIK)
+	if err != nil {
+		return nil, err
+	}
+	if exists {
+		return nil, customErr.NewNIKAlreadyExistsError(req.NIK)
+	}
+
 	penduduk := models.Penduduk{
 		NIK:                req.NIK,
 		NoKK:               req.NoKK,
@@ -62,7 +70,9 @@ func (s *pendudukService) CreatePenduduk(req *requests.PendudukRequest) (*models
 		Keterangan:         req.Keterangan,
 	}
 
-	err = s.repository.CreatePenduduk(&penduduk)
+	if err := s.repository.CreatePenduduk(&penduduk); err != nil {
+		return nil, err
+	}
 	return &penduduk, err
 }
 

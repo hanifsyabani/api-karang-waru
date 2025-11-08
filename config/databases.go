@@ -25,7 +25,11 @@ func InitDB() {
 	fmt.Println("✅ DB Connected")
 
 	// err = db.AutoMigrate(
-	// 	&models.Penduduk{},
+	// 	&models.DokumentasiPendidikan{},
+	// 	&models.CapaianPendidikan{},
+	// 	&models.LembagaPendidikan{},
+	// 	&models.ProgramPendidikan{},
+	// 	&models.StatistikPendidikan{},
 
 	// )
 	// if err != nil {
