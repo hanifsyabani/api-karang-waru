@@ -75,8 +75,6 @@ func (s *pendidikanService) CreateLembagaPendidikan(req *requests.LembagaPendidi
 		JumlahSiswa:       req.JumlahSiswa,
 		JumlahStaf:        req.JumlahGuru,
 		Kontak:            req.Kontak,
-		Latitude:          req.Latitude,
-		Longitude:         req.Longitude,
 	}
 
 	if err := s.repo.CreateLembagaPendidikan(&lembaga); err != nil {
@@ -114,8 +112,6 @@ func (s *pendidikanService) UpdateLembagaPendidikan(id uint, req *requests.Lemba
 	lembaga.JumlahSiswa = req.JumlahSiswa
 	lembaga.JumlahStaf = req.JumlahGuru
 	lembaga.Kontak = req.Kontak
-	lembaga.Latitude = req.Latitude
-	lembaga.Longitude = req.Longitude
 
 	if err := s.repo.UpdateLembagaPendidikan(lembaga); err != nil {
 		return nil, err
@@ -215,6 +211,7 @@ func (s *pendidikanService) CreateProgramPendidikan(req *requests.ProgramPendidi
 		Deskripsi:      req.Deskripsi,
 		TanggalMulai:   parsedStartDate,
 		TanggalSelesai: parsedEndDate,
+		Status:         req.Status,
 	}
 
 	if err := s.repo.CreateProgramPendidikan(&prog); err != nil {

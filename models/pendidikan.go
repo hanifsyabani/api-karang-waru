@@ -64,7 +64,7 @@ type ProgramPendidikan struct {
 	Deskripsi      string    `gorm:"column:deskripsi;type:TEXT"`
 	TanggalMulai   time.Time `gorm:"column:tanggal_mulai"`
 	TanggalSelesai time.Time `gorm:"column:tanggal_selesai"`
-	Status         string    `gorm:"column:status;type:VARCHAR(50);default:'Aktif'"` // Aktif / Selesai
+	Status         string    `gorm:"column:status;type:VARCHAR(50);default:'perencanaan'"` // Aktif / Selesai
 
 	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime"`

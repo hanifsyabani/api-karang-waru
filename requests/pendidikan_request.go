@@ -9,8 +9,6 @@ type LembagaPendidikanRequest struct {
 	NamaSekolah       string  `json:"nama_sekolah" binding:"required"`
 	JenjangPendidikan string  `json:"jenjang_pendidikan" binding:"required"` // PAUD, SD, SMP, SMA, dll
 	Alamat            string  `json:"alamat" binding:"required"`
-	Latitude          float64 `json:"latitude"`
-	Longitude         float64 `json:"longitude"`
 	JumlahSiswa       int     `json:"jumlah_siswa"`
 	JumlahGuru        int     `json:"jumlah_guru"`
 	JumlahStaf        int     `json:"jumlah_staf"`
