@@ -36,6 +36,7 @@ func main() {
 	apbdRepository := repositories.NewApbdRepository(config.DB)
 	pendudukRepository := repositories.NewPendudukRepository(config.DB)
 	pendidikanRepository := repositories.NewPendidikanRepository(config.DB)
+	kesehatanRepository := repositories.NewKesehatanRepository(config.DB)
 
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService()
@@ -49,6 +50,7 @@ func main() {
 	apbdService := services.NewApbdService(apbdRepository)
 	pendudukService := services.NewPendudukService(pendudukRepository)
 	pendidikanService := services.NewPendidikanService(pendidikanRepository)
+	kesehatanService := services.NewKesehatanService(kesehatanRepository)
 
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(authService)
@@ -62,6 +64,7 @@ func main() {
 	apbdHandler := handlers.NewApbdHandler(apbdService)
 	pendudukHandler := handlers.NewPendudukHandler(pendudukService)
 	pendidikanHandler := handlers.NewPendidikanHandler(pendidikanService)
+	kesehatanHandler := handlers.NewKesehatanHandler(kesehatanService)
 
 	router := gin.Default()
 
@@ -178,6 +181,18 @@ func main() {
 		auth.POST("/pendidikan/dokumentasi", pendidikanHandler.CreateDokumentasi)
 		auth.PUT("/pendidikan/dokumentasi/:id", pendidikanHandler.UpdateDokumentasi)
 		auth.DELETE("/pendidikan/dokumentasi/:id", pendidikanHandler.DeleteDokumentasi)
+
+		// Kesehatan - Layanan
+		auth.GET("/kesehatan/layanan", kesehatanHandler.GetLayanan)
+		auth.GET("/kesehatan/layanan/:id", kesehatanHandler.GetLayananByID)
+		auth.POST("/kesehatan/layanan", kesehatanHandler.CreateLayanan)
+		auth.PUT("/kesehatan/layanan/:id", kesehatanHandler.UpdateLayanan)
+		auth.DELETE("/kesehatan/layanan/:id", kesehatanHandler.DeleteLayanan)
+		auth.GET("/kesehatan/fasilitas", kesehatanHandler.GetFasilitasKesehatan)
+		auth.GET("/kesehatan/fasilitas/:id", kesehatanHandler.GetFasilitasKesehatanByID)
+		auth.POST("/kesehatan/fasilitas", kesehatanHandler.CreateFasilitas)
+		auth.PUT("/kesehatan/fasilitas/:id", kesehatanHandler.UpdateFasilitasKesehatan)
+		auth.DELETE("/kesehatan/fasilitas/:id", kesehatanHandler.DeleteFasilitasKesehatan)
 
 	}
 
