@@ -95,9 +95,9 @@ func main() {
 
 	// protected
 	auth := api.Group("/karang-waru")
-	auth.Use(middlewares.JWTAuth())
+	auth.Use(middlewares.AuthMiddleware())
 	{
-		auth.GET("/profile", userHandler.GetProfile)
+		auth.GET("/me", userHandler.GetProfile)
 		auth.GET("/users", userHandler.GetUsers)
 		auth.GET("/users/:id", userHandler.GetUser)
 		auth.POST("/users", userHandler.CreateUser)
