@@ -21,3 +21,7 @@ func SetAuthCookies(
 	)
 	
 }
+
+func ClearAuthCookies(c *gin.Context){
+	c.SetCookie("access_token", "", -1, "/", "", true, true)
+}

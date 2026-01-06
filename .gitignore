@@ -1,6 +1,22 @@
+# === ENV ===
 .env
+.env.*
 
-api-karang-waru
+# === GO BUILD ===
+main
+main.exe
+*.exe
+*.exe~
+*.out
+*.test
+bin/
+dist/
 
+# === CACHE ===
+*.log
+tmp/
+vendor/
+
+# === OS ===
 .DS_Store
 Thumbs.db

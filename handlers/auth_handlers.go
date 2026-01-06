@@ -72,7 +72,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 }
 
 func (h *AuthHandler) Logout(c *gin.Context) {
-	c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
+	utils.ClearAuthCookies(c)
 	c.JSON(200, gin.H{"message": "logout success"})
 }
 
@@ -86,7 +86,6 @@ func (h *UserHandler) GetProfile(c *gin.Context) {
 		})
 		return
 	}
-
 
 	user, err := h.service.GetUserByID(userID.(uint))
 	if err != nil {
