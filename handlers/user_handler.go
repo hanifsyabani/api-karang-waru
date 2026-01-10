@@ -54,7 +54,13 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 // get all
 func (h *UserHandler) GetUsers(c *gin.Context) {
-	users, err := h.service.GetAllUser()
+	search := c.Query("query")
+	sortBy := c.DefaultQuery("sortBy", "created_at")
+	sortOrder := c.DefaultQuery("sortOrder", "desc")
+
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	users, err := h.service.GetAllUser(search, page, limit, sortBy, sortOrder)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.APIResponse{

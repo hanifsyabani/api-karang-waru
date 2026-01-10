@@ -10,7 +10,13 @@ import (
 
 type UserService interface {
 	CreateUser(req *requests.UserRequest)(*models.User, error)
-	GetAllUser()([]models.User, error)
+	GetAllUser(
+		search string,
+		page int,
+		limit int,
+		sortBy string,
+		sortOrder string,
+	)([]models.User, error)
 	GetUserByID(id uint)(*models.User, error)
 	UpdateUser(id uint, req *requests.UserRequest)(*models.User, error)
 	DeleteUser(id uint) error
@@ -53,8 +59,14 @@ func (s *userService) CreateUser(req *requests.UserRequest) (*models.User,error)
 	return &user, err
 }
 
-func (s *userService) GetAllUser() ([]models.User, error) {
-	return s.repository.FindAll()
+func (s *userService) GetAllUser(
+	search string,
+	page int,
+	limit int,
+	sortBy string,
+	sortOrder string,
+) ([]models.User, error) {
+	return s.repository.FindAll(search, page, limit, sortBy, sortOrder)
 }
 
 func (s *userService) GetUserByID(id uint) (*models.User, error) {

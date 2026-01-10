@@ -5,6 +5,7 @@
 # === GO BUILD ===
 main
 main.exe
+api-karang-waru.exe
 *.exe
 *.exe~
 *.out
