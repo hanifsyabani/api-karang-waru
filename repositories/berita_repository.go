@@ -2,13 +2,20 @@ package repositories
 
 import (
 	"api-karang-waru/models"
+	"strings"
 
 	"gorm.io/gorm"
 )
 
 type BeritaRepository interface {
 	CreateBerita(berita *models.Berita) error
-	FindBerita() ([]models.Berita, error)
+	FindBerita(
+		search string,
+		page int,
+		limit int,
+		sortBy string,
+		sortOrder string,
+	) ([]models.Berita, error)
 	FindBeritaByID(id uint) (*models.Berita, error)
 	FindBeritaBySlug(slug string) (*models.Berita, error)
 	UpdateBerita(berita *models.Berita) error
@@ -28,9 +35,36 @@ func (r *beritaRepository) CreateBerita(berita *models.Berita) error {
 }
 
 // []models.Demografis artinya fungsi tersebut mengembalikan sebuah slice (mirip array tapi lebih fleksibel di Go) yang berisi banyak objek models.Demografis.
-func (r *beritaRepository) FindBerita() ([]models.Berita, error) {
+func (r *beritaRepository) FindBerita(
+	search string,
+	page int,
+	limit int,
+	sortBy string,
+	sortOrder string,
+) ([]models.Berita, error) {
+
 	var berita []models.Berita
-	err := r.db.Find(&berita).Error
+	offset := (page - 1) * limit
+	query := r.db.Model(&models.Berita{})
+
+	if search != "" {
+		search = strings.ToLower(search)
+		query = query.Where(
+			"LOWER(title) LIKE ?",
+			"%"+search+"%",
+			"%"+search+"%",
+		)
+	}
+
+	if sortOrder != "asc" && sortOrder != "desc" {
+		sortOrder = "desc"
+	}
+
+	// sortBy → nama kolom
+	// sortOrder → arah sorting
+	query = query.Order(sortBy + " " + sortOrder)
+
+	err := query.Limit(limit).Offset(offset).Find(&berita).Error
 	return berita, err
 }
 

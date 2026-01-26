@@ -11,7 +11,13 @@ import (
 
 type BeritaService interface {
 	CreateBerita(req *requests.BeritaRequest)(*models.Berita, error)
-	GetAllBerita()([]models.Berita, error)
+	GetAllBerita(
+		search string,
+		page int,
+		limit int,
+		sortBy string,
+		sortOrder string,
+	)([]models.Berita, error)
 	GetBeritaByID(id uint)(*models.Berita, error)
 	GetBeritaBySlug(slug string)(*models.Berita, error)
 	UpdateBerita(id uint, req *requests.BeritaRequest)(*models.Berita, error)
@@ -55,8 +61,14 @@ func (s *beritaService) CreateBerita(req *requests.BeritaRequest) (*models.Berit
 	return &berita, err
 }
 
-func (s *beritaService) GetAllBerita() ([]models.Berita, error) {
-	return s.repository.FindBerita()
+func (s *beritaService) GetAllBerita(search string , page int, limit int, sortBy string, sortOrder string) ([]models.Berita, error) {
+	return s.repository.FindBerita(
+		search,
+		page,
+		limit,
+		sortBy,
+		sortOrder,
+	)
 }
 
 func (s *beritaService) GetBeritaByID(id uint) (*models.Berita, error) {
