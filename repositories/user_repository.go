@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"api-karang-waru/models"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -50,8 +51,9 @@ func (r *userRepository) FindAll(
 	// ? → placeholder (aman dari SQL injection)
 	// %search% → pencarian partial (mengandung kata)
 	if search != "" {
+		search = strings.ToLower(search)
 		query = query.Where(
-			"username LIKE ? OR email LIKE ?",
+			"LOWER(full_name) LIKE ? OR LOWER(email) LIKE ?",
 			"%"+search+"%",
 			"%"+search+"%",
 		)
