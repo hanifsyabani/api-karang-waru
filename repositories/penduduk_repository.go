@@ -2,13 +2,21 @@ package repositories
 
 import (
 	"api-karang-waru/models"
+	"strings"
 
 	"gorm.io/gorm"
 )
 
 type PendudukRepository interface {
 	CreatePenduduk(penduduk *models.Penduduk) error
-	FindPenduduk() ([]models.Penduduk, error)
+	CountPenduduk() (int64, error)
+	FindPenduduk(
+		search string,
+		page int,
+		limit int,
+		sortBy string,
+		sortOrder string,
+	) ([]models.Penduduk, error)
 	FindPendudukByID(id uint) (*models.Penduduk, error)
 	IsNIKExists(nik string) (bool, error)
 	UpdatePenduduk(penduduk *models.Penduduk) error
@@ -28,10 +36,42 @@ func (r *pendudukRepository) CreatePenduduk(penduduk *models.Penduduk) error {
 }
 
 // []models.Demografis artinya fungsi tersebut mengembalikan sebuah slice (mirip array tapi lebih fleksibel di Go) yang berisi banyak objek models.Demografis.
-func (r *pendudukRepository) FindPenduduk() ([]models.Penduduk, error) {
+func (r *pendudukRepository) FindPenduduk(
+	search string,
+	page int,
+	limit int,
+	sortBy string,
+	sortOrder string,
+) ([]models.Penduduk, error) {
 	var penduduk []models.Penduduk
-	err := r.db.Find(&penduduk).Error
+
+	offset := (page - 1) * limit
+	query := r.db.Model(&models.Penduduk{})
+
+	if search != "" {
+		search = strings.ToLower(search)
+		query = query.Where(
+			"LOWER(nik) LIKE ? OR LOWER(nama_lengkap) LIKE ?",
+			"%"+search+"%",
+			"%"+search+"%",
+		)
+	}
+
+	if sortOrder != "asc" && sortOrder != "desc" {
+		sortOrder = "desc"
+	}
+
+	query = query.Order(sortBy + " " + sortOrder)
+
+	err := query.Limit(limit).Offset(offset).Find(&penduduk).Error
 	return penduduk, err
+}
+
+func (r *pendudukRepository) CountPenduduk() (int64, error) {
+	var total int64
+
+	err := r.db.Model(&models.Penduduk{}).Count(&total).Error
+	return total, err
 }
 
 func (r *pendudukRepository) FindPendudukByID(id uint) (*models.Penduduk, error) {
@@ -50,8 +90,6 @@ func (r *pendudukRepository) IsNIKExists(nik string) (bool, error) {
 	}
 	return count > 0, nil
 }
-
-
 
 // tidak butuh id karena langsung method Save() cari priamry key di struct models.ProfilDesa
 func (r *pendudukRepository) UpdatePenduduk(penduduk *models.Penduduk) error {

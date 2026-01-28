@@ -51,7 +51,13 @@ func (h *PendudukHandler) CreatePenduduk(c *gin.Context) {
 
 // get all
 func (h *PendudukHandler) GetAllPenduduk(c *gin.Context) {
-	penduduk, err := h.service.GetAllPenduduk()
+	search := c.Query("query")
+	sortBy := c.DefaultQuery("sortBy", "created_at")
+	sortOrder := c.DefaultQuery("sortOrder", "desc")
+
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	penduduk, err := h.service.GetAllPenduduk(search, page, limit, sortBy, sortOrder)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.APIResponse{
@@ -105,6 +111,23 @@ func (h *PendudukHandler) GetPendudukByID(c *gin.Context) {
 	})
 }
 
+func (h *PendudukHandler) CountPenduduk(c *gin.Context) {
+	penduduk, err := h.service.CountPenduduk()
+	if err != nil {	
+		c.JSON(http.StatusInternalServerError, responses.APIResponse{
+			Code:    "INTERNAL_SERVER_ERROR",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.APIResponse{
+		Code:    "OK",
+		Message: "penduduk retrieved successfully",
+		Data:    penduduk,
+	})
+}
 
 // update
 func (h *PendudukHandler) UpdatePenduduk(c *gin.Context) {
