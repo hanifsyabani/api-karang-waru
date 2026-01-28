@@ -145,6 +145,7 @@ func main() {
 		auth.GET("/penduduk", pendudukHandler.GetAllPenduduk)
 		auth.GET("/penduduk/:id", pendudukHandler.GetPendudukByID)
 		auth.POST("/penduduk", pendudukHandler.CreatePenduduk)
+		auth.GET("/penduduk/count", pendudukHandler.CountPenduduk)
 		auth.PUT("/penduduk/:id", pendudukHandler.UpdatePenduduk)
 		auth.DELETE("/penduduk/:id", pendudukHandler.DeletePenduduk)
 		// Pendidikan - Program

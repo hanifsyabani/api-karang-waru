@@ -11,7 +11,14 @@ import (
 
 type PendudukService interface {
 	CreatePenduduk(req *requests.PendudukRequest) (*models.Penduduk, error)
-	GetAllPenduduk() ([]models.Penduduk, error)
+	GetAllPenduduk(
+		search string,
+		page int,
+		limit int,
+		sortBy string,
+		sortOrder string,
+	) ([]models.Penduduk, error)
+	CountPenduduk() (int64, error)
 	GetPendudukByID(id uint) (*models.Penduduk, error)
 	UpdatePenduduk(id uint, req *requests.PendudukRequest) (*models.Penduduk, error)
 	DeletePenduduk(id uint) error
@@ -76,12 +83,22 @@ func (s *pendudukService) CreatePenduduk(req *requests.PendudukRequest) (*models
 	return &penduduk, err
 }
 
-func (s *pendudukService) GetAllPenduduk() ([]models.Penduduk, error) {
-	return s.repository.FindPenduduk()
+func (s *pendudukService) GetAllPenduduk(
+	search string,
+	page int,
+	limit int,
+	sortBy string,
+	sortOrder string,
+) ([]models.Penduduk, error) {
+	return s.repository.FindPenduduk(search, page, limit, sortBy, sortOrder)
 }
 
 func (s *pendudukService) GetPendudukByID(id uint) (*models.Penduduk, error) {
 	return s.repository.FindPendudukByID(id)
+}
+
+func (s *pendudukService) CountPenduduk() (int64, error) {
+	return s.repository.CountPenduduk()
 }
 
 func (s *pendudukService) UpdatePenduduk(id uint, req *requests.PendudukRequest) (*models.Penduduk, error) {
