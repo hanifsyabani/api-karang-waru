@@ -9,7 +9,7 @@ import (
 
 type PendudukRepository interface {
 	CreatePenduduk(penduduk *models.Penduduk) error
-	CountPenduduk() (int64, error)
+	CountPenduduk() (total int64, lakiLaki int64, perempuan int64, kartuKeluarga int64, err error)
 	FindPenduduk(
 		search string,
 		page int,
@@ -67,11 +67,23 @@ func (r *pendudukRepository) FindPenduduk(
 	return penduduk, err
 }
 
-func (r *pendudukRepository) CountPenduduk() (int64, error) {
-	var total int64
+func (r *pendudukRepository) CountPenduduk() (total int64, lakiLaki int64, perempuan int64, kartuKeluarga int64, err error) {
+	if err = r.db.Model(&models.Penduduk{}).Count(&total).Error; err != nil {
+		return
+	}
 
-	err := r.db.Model(&models.Penduduk{}).Count(&total).Error
-	return total, err
+	if err = r.db.Model(&models.Penduduk{}).Where("jenis_kelamin = ?", "L").Count(&lakiLaki).Error; err != nil {
+		return
+	}
+	if err = r.db.Model(&models.Penduduk{}).Where("jenis_kelamin = ?", "P").Count(&perempuan).Error; err != nil {
+		return
+	}
+
+	if err = r.db.Model(&models.Penduduk{}).Distinct("no_kk").Count(&kartuKeluarga).Error; err != nil {
+		return
+	}
+
+	return
 }
 
 func (r *pendudukRepository) FindPendudukByID(id uint) (*models.Penduduk, error) {
