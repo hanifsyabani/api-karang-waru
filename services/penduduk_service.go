@@ -18,7 +18,13 @@ type PendudukService interface {
 		sortBy string,
 		sortOrder string,
 	) ([]models.Penduduk, error)
-	CountPenduduk() (int64, error)
+	CountPenduduk() (
+		total int64,
+		lakiLaki int64,
+		perempuan int64,
+		kartuKeluarga int64,
+		err error,
+	)
 	GetPendudukByID(id uint) (*models.Penduduk, error)
 	UpdatePenduduk(id uint, req *requests.PendudukRequest) (*models.Penduduk, error)
 	DeletePenduduk(id uint) error
@@ -97,7 +103,13 @@ func (s *pendudukService) GetPendudukByID(id uint) (*models.Penduduk, error) {
 	return s.repository.FindPendudukByID(id)
 }
 
-func (s *pendudukService) CountPenduduk() (int64, error) {
+func (s *pendudukService) CountPenduduk() (
+	total int64,
+	lakiLaki int64,
+	perempuan int64,
+	kartuKeluarga int64,
+	err error,
+) {
 	return s.repository.CountPenduduk()
 }
 

@@ -112,7 +112,7 @@ func (h *PendudukHandler) GetPendudukByID(c *gin.Context) {
 }
 
 func (h *PendudukHandler) CountPenduduk(c *gin.Context) {
-	penduduk, err := h.service.CountPenduduk()
+	total, lakiLaki, perempuan, kartuKeluarga, err := h.service.CountPenduduk()
 	if err != nil {	
 		c.JSON(http.StatusInternalServerError, responses.APIResponse{
 			Code:    "INTERNAL_SERVER_ERROR",
@@ -125,7 +125,12 @@ func (h *PendudukHandler) CountPenduduk(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.APIResponse{
 		Code:    "OK",
 		Message: "penduduk retrieved successfully",
-		Data:    penduduk,
+		Data:    map[string]interface{}{
+			"total":          total,
+			"male":      lakiLaki,
+			"female":      perempuan,
+			"family_card_count": kartuKeluarga,
+		},
 	})
 }
 
