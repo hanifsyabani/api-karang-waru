@@ -133,6 +133,23 @@ func (h *BeritaHandler) GetBeritaBySlug(c *gin.Context) {
 		Data:    responses.BeritaResponseFromModel(berita),
 	})
 }
+func (h *BeritaHandler) GetNewsByCategory(c *gin.Context) {
+	berita, err := h.service.GetCountBeritaByCategory()
+	if err != nil {
+		c.JSON(http.StatusNotFound, responses.APIResponse{
+			Code:    "NOT_FOUND",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.APIResponse{
+		Code:    "OK",
+		Message: "berita retrieved successfully",
+		Data:    berita,
+	})
+}
 
 // update
 func (h *BeritaHandler) UpdateBerita(c *gin.Context) {
