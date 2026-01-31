@@ -19,6 +19,11 @@ type BeritaResponse struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
+type CountBeritaKategori struct {
+	Kategori string `json:"kategori"`
+	Total    int64  `json:"total"`
+}
+
 
 func BeritaResponseFromModel(berita *models.Berita) BeritaResponse {
 	return BeritaResponse{

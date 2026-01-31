@@ -4,6 +4,7 @@ import (
 	"api-karang-waru/models"
 	"api-karang-waru/repositories"
 	"api-karang-waru/requests"
+	"api-karang-waru/responses"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -19,6 +20,7 @@ type BeritaService interface {
 		sortOrder string,
 	)([]models.Berita, error)
 	GetBeritaByID(id uint)(*models.Berita, error)
+	GetCountBeritaByCategory() ([]responses.CountBeritaKategori, error)
 	GetBeritaBySlug(slug string)(*models.Berita, error)
 	UpdateBerita(id uint, req *requests.BeritaRequest)(*models.Berita, error)
 	DeleteBerita(id uint) error
@@ -69,6 +71,10 @@ func (s *beritaService) GetAllBerita(search string , page int, limit int, sortBy
 		sortBy,
 		sortOrder,
 	)
+}
+
+func (s *beritaService) GetCountBeritaByCategory() ([]responses.CountBeritaKategori, error) {
+	return s.repository.CountBeritaByCategory()
 }
 
 func (s *beritaService) GetBeritaByID(id uint) (*models.Berita, error) {

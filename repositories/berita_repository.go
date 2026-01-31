@@ -3,6 +3,7 @@ package repositories
 import (
 	"api-karang-waru/models"
 	"strings"
+	"api-karang-waru/responses"
 
 	"gorm.io/gorm"
 )
@@ -16,6 +17,7 @@ type BeritaRepository interface {
 		sortBy string,
 		sortOrder string,
 	) ([]models.Berita, error)
+	CountBeritaByCategory() ([]responses.CountBeritaKategori, error)
 	FindBeritaByID(id uint) (*models.Berita, error)
 	FindBeritaBySlug(slug string) (*models.Berita, error)
 	UpdateBerita(berita *models.Berita) error
@@ -72,6 +74,17 @@ func (r *beritaRepository) FindBeritaByID(id uint) (*models.Berita, error) {
 	var berita models.Berita
 	err := r.db.Find(&berita, id).Error
 	return &berita, err
+}
+
+func (r *beritaRepository) CountBeritaByCategory() ([]responses.CountBeritaKategori, error) {
+	var results []responses.CountBeritaKategori
+	
+
+	err := r.db.Model(&models.Berita{}).
+		Select("category, COUNT(*) as total").
+		Group("category").
+		Scan(&results).Error
+	return results, err
 }
 
 func (r *beritaRepository) FindBeritaBySlug(slug string) (*models.Berita, error) {
