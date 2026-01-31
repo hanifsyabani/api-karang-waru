@@ -67,15 +67,25 @@ func (r *pendudukRepository) FindPenduduk(
 	return penduduk, err
 }
 
+func countByGender(db *gorm.DB, gender string) (int64, error) {
+	var count int64
+
+	err:= db.Model(&models.Penduduk{}).Where("jenis_kelamin = ?", gender).Count(&count).Error
+	return count, err
+}
+
 func (r *pendudukRepository) CountPenduduk() (total int64, lakiLaki int64, perempuan int64, kartuKeluarga int64, err error) {
 	if err = r.db.Model(&models.Penduduk{}).Count(&total).Error; err != nil {
 		return
 	}
 
-	if err = r.db.Model(&models.Penduduk{}).Where("jenis_kelamin = ?", "L").Count(&lakiLaki).Error; err != nil {
+	lakiLaki, err = countByGender(r.db, "Laki-laki")
+	if err != nil {
 		return
 	}
-	if err = r.db.Model(&models.Penduduk{}).Where("jenis_kelamin = ?", "P").Count(&perempuan).Error; err != nil {
+
+	perempuan, err = countByGender(r.db, "Perempuan")
+	if err != nil {
 		return
 	}
 

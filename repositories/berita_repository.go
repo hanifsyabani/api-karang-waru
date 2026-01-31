@@ -3,7 +3,6 @@ package repositories
 import (
 	"api-karang-waru/models"
 	"strings"
-	"api-karang-waru/responses"
 
 	"gorm.io/gorm"
 )
@@ -17,7 +16,7 @@ type BeritaRepository interface {
 		sortBy string,
 		sortOrder string,
 	) ([]models.Berita, error)
-	CountBeritaByCategory() ([]responses.CountBeritaKategori, error)
+	CountBeritaByCategory() (map[string]int64, error)
 	FindBeritaByID(id uint) (*models.Berita, error)
 	FindBeritaBySlug(slug string) (*models.Berita, error)
 	UpdateBerita(berita *models.Berita) error
@@ -76,15 +75,48 @@ func (r *beritaRepository) FindBeritaByID(id uint) (*models.Berita, error) {
 	return &berita, err
 }
 
-func (r *beritaRepository) CountBeritaByCategory() ([]responses.CountBeritaKategori, error) {
-	var results []responses.CountBeritaKategori
-	
+func (r *beritaRepository) CountBeritaByCategory() (map[string]int64, error) {
+	type tempResult struct {
+		Category string
+		Total    int64
+	}
+
+	var dbresults []tempResult
 
 	err := r.db.Model(&models.Berita{}).
-		Select("category, COUNT(*) as total").
+		Select("category, COUNT(*) AS total").
 		Group("category").
-		Scan(&results).Error
-	return results, err
+		Scan(&dbresults).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	countMap := make((map[string]int64))
+
+	for _, res := range dbresults {
+		countMap[res.Category] = res.Total
+	}
+
+	kategoriList := []string{
+		"umum",
+		"kegiatan",
+		"infrastruktur",
+		"kesehatan",
+		"pendidikan",
+	}
+
+	results := make(map[string]int64)
+	for _, k := range kategoriList {
+		results[k] = 0
+	}
+
+	// isi dari DB
+	for _, r := range dbresults {
+		results[r.Category] = r.Total
+	}
+
+	return results, nil
 }
 
 func (r *beritaRepository) FindBeritaBySlug(slug string) (*models.Berita, error) {

@@ -19,23 +19,18 @@ type BeritaResponse struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
-type CountBeritaKategori struct {
-	Kategori string `json:"kategori"`
-	Total    int64  `json:"total"`
-}
-
 
 func BeritaResponseFromModel(berita *models.Berita) BeritaResponse {
 	return BeritaResponse{
-		ID:       berita.ID,
-		Title:    berita.Title,
-		Category: berita.Category,
-		Content:  berita.Content,
-		Writer:   berita.Writer,
-		Image:    berita.Image,
-		Status:   berita.Status,
-		Slug:     berita.Slug,
-		Date:     berita.Date.Format("2006-01-02"),
+		ID:        berita.ID,
+		Title:     berita.Title,
+		Category:  berita.Category,
+		Content:   berita.Content,
+		Writer:    berita.Writer,
+		Image:     berita.Image,
+		Status:    berita.Status,
+		Slug:      berita.Slug,
+		Date:      berita.Date.Format("2006-01-02"),
 		CreatedAt: berita.CreatedAt.Format("2006-01-02"),
 		UpdatedAt: berita.UpdatedAt.Format("2006-01-02"),
 	}
