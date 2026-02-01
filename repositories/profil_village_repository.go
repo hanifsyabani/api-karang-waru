@@ -32,6 +32,7 @@ func (r *profilRepository) FindProfil() (models.ProfilDesa, error) {
 	return profil, err
 }
 
+
 // tidak butuh id karena langsung method Save() cari priamry key di struct models.Demografis
 func (r *profilRepository) UpdateProfil(profil *models.ProfilDesa) error {
 	return r.db.Save(profil).Error

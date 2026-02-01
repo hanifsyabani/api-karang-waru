@@ -53,7 +53,6 @@ func (r *beritaRepository) FindBerita(
 		query = query.Where(
 			"LOWER(title) LIKE ?",
 			"%"+search+"%",
-			"%"+search+"%",
 		)
 	}
 
@@ -91,13 +90,6 @@ func (r *beritaRepository) CountBeritaByCategory() (map[string]int64, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	countMap := make((map[string]int64))
-
-	for _, res := range dbresults {
-		countMap[res.Category] = res.Total
-	}
-
 	kategoriList := []string{
 		"umum",
 		"kegiatan",
@@ -110,11 +102,15 @@ func (r *beritaRepository) CountBeritaByCategory() (map[string]int64, error) {
 	for _, k := range kategoriList {
 		results[k] = 0
 	}
+	var total int64
 
 	// isi dari DB
 	for _, r := range dbresults {
 		results[r.Category] = r.Total
+		total += r.Total
+
 	}
+	results["total"] = total
 
 	return results, nil
 }

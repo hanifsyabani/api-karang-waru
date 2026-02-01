@@ -54,7 +54,20 @@ func (h *UmkmHandler) CreateUmkm(c *gin.Context) {
 
 // get all
 func (h *UmkmHandler) GetAllUmkm(c *gin.Context) {
-	umkm, err := h.service.GetAllUmkm()
+	search := c.Query("search")
+	status := c.Query("status")
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit,_ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	sortBy := c.DefaultQuery("sortBy", "created_at")
+	sortOrder := c.DefaultQuery("sortOrder", "desc")
+	umkm, err := h.service.GetAllUmkm(
+		search,
+		page,
+		limit,
+		sortBy,
+		sortOrder,
+		status,
+	)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.APIResponse{
@@ -77,6 +90,28 @@ func (h *UmkmHandler) GetAllUmkm(c *gin.Context) {
 	})
 
 }
+
+func (h *UmkmHandler) GetCountStatus(c *gin.Context) {
+	verified, unverified, err := h.service.GetCountStatus()
+	if err != nil {
+		c.JSON(http.StatusNotFound, responses.APIResponse{
+			Code:    "NOT_FOUND",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.APIResponse{
+		Code:    "OK",
+		Message: "umkm retrieved successfully",
+		Data:    gin.H{
+			"verified":   verified,
+			"unverified": unverified,
+		},
+	})
+}
+
 
 // get by id
 func (h *UmkmHandler) GetUmkmByID(c *gin.Context) {

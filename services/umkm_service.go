@@ -10,8 +10,16 @@ import (
 
 type UmkmService interface {
 	CreateUmkm(req *requests.UmkmRequest) (*models.Umkm, error)
-	GetAllUmkm() ([]models.Umkm, error)
+	GetAllUmkm(
+		search string,
+		page int,
+		limit int,
+		sortBy string,
+		sortOrder string,
+		status string,
+	) ([]models.Umkm, error)
 	GetUmkmByID(id uint) (*models.Umkm, error)
+	GetCountStatus() (verified int64, unverified int64, err error)
 	GetUmkmBySlug(slug string) (*models.Umkm, error)
 	UpdateUmkm(id uint, req *requests.UmkmRequest) (*models.Umkm, error)
 	DeleteUmkm(id uint) error
@@ -48,8 +56,22 @@ func (s *umkmService) CreateUmkm(req *requests.UmkmRequest) (*models.Umkm, error
 	return &umkm, err
 }
 
-func (s *umkmService) GetAllUmkm() ([]models.Umkm, error) {
-	return s.repository.FindUmkm()
+func (s *umkmService) GetAllUmkm(
+	search string,
+	page int,
+	limit int,
+	sortBy string,
+	sortOrder string,
+	status string,
+) ([]models.Umkm, error) {
+	return s.repository.FindUmkm(
+		search,
+		page,
+		limit,
+		sortBy,
+		sortOrder,
+		status,
+	)
 }
 
 func (s *umkmService) GetUmkmByID(id uint) (*models.Umkm, error) {
@@ -59,6 +81,10 @@ func (s *umkmService) GetUmkmByID(id uint) (*models.Umkm, error) {
 func (s *umkmService) GetUmkmBySlug(slug string) (*models.Umkm, error) {
 	return s.repository.FindUmkmBySlug(slug)
 }
+func (s *umkmService) GetCountStatus() (verified int64, unverified int64, err error) {
+	return s.repository.CountStatus()
+}
+
 
 func (s *umkmService) UpdateUmkm(id uint, req *requests.UmkmRequest) (*models.Umkm, error) {
 	if err := s.validate.Struct(req); err != nil {
