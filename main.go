@@ -135,6 +135,7 @@ func main() {
 		auth.GET("/umkm", umkmHandler.GetAllUmkm)
 		auth.GET("/umkm/:id", umkmHandler.GetUmkmByID)
 		auth.GET("/umkm/slug/:slug", umkmHandler.GetUmkmBySlug)
+		auth.GET("/umkm/count-status", umkmHandler.GetCountStatus)
 		auth.POST("/umkm", umkmHandler.CreateUmkm)
 		auth.PUT("/umkm/:id", umkmHandler.UpdateUmkm)
 		auth.DELETE("/umkm/:id", umkmHandler.DeleteUmkm)

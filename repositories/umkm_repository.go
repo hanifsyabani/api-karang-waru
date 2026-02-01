@@ -2,14 +2,23 @@ package repositories
 
 import (
 	"api-karang-waru/models"
+	"strings"
 
 	"gorm.io/gorm"
 )
 
 type UmkmRepository interface {
 	CreateUmkm(umkm *models.Umkm) error
-	FindUmkm() ([]models.Umkm, error)
+	FindUmkm(
+		search string,
+		page int,
+		limit int,
+		sortBy string,
+		sortOrder string,
+		status string,
+	) ([]models.Umkm, error)
 	FindUmkmByID(id uint) (*models.Umkm, error)
+	CountStatus() (verified int64, unverified int64, err error)
 	FindUmkmBySlug(slug string) (*models.Umkm, error)
 	UpdateUmkm(umkm *models.Umkm) error
 	DeleteUmkm(umkm *models.Umkm) error
@@ -28,12 +37,61 @@ func (r *umkmRepository) CreateUmkm(umkm *models.Umkm) error {
 }
 
 // []models.Demografis artinya fungsi tersebut mengembalikan sebuah slice (mirip array tapi lebih fleksibel di Go) yang berisi banyak objek models.Demografis.
-func (r *umkmRepository) FindUmkm() ([]models.Umkm, error) {
+func (r *umkmRepository) FindUmkm(
+	search string,
+	page int,
+	limit int,
+	sortBy string,
+	sortOrder string,
+	status string,
+) ([]models.Umkm, error) {
 	var umkm []models.Umkm
-	err := r.db.Find(&umkm).Error
+	offset := (page - 1) * limit
+	query := r.db.Model(&models.Umkm{})
+
+	if search != "" {
+		search = strings.ToLower(search)
+		query = query.Where(
+			"LOWER(nama_usaha) LIKE ?",
+			"%"+search+"%",
+		)
+	}
+
+	if status != "" {
+		query = query.Where("status = ?", status)
+	}
+
+	if sortOrder != "asc" && sortOrder != "desc" {
+		sortOrder = "desc"
+	}
+
+	// sortBy → nama kolom
+	// sortOrder → arah sorting
+	query = query.Order(sortBy + " " + sortOrder)
+
+	err := query.Limit(limit).Offset(offset).Find(&umkm).Error
 	return umkm, err
 }
 
+func countByStatus(db *gorm.DB, status string) (int64, error) {
+	var count int64
+
+	err := db.Model(&models.Umkm{}).Where("status = ?", status).Count(&count).Error
+	return count, err
+}
+
+func (r *umkmRepository) CountStatus() (verified int64, unverified int64, err error) {
+	verified, err = countByStatus(r.db, "verified")
+	if err != nil {
+		return
+	}
+	unverified, err = countByStatus(r.db, "unverified")
+	if err != nil {
+		return
+	}
+
+	return  
+}
 func (r *umkmRepository) FindUmkmByID(id uint) (*models.Umkm, error) {
 	var umkm models.Umkm
 	err := r.db.Find(&umkm, id).Error
