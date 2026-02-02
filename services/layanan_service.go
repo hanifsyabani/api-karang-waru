@@ -10,7 +10,13 @@ import (
 
 type LayananService interface {
 	CreateLayanan(req *requests.LayananRequest) (*models.LayananDesa, error)
-	GetAllLayanan() ([]models.LayananDesa, error)
+	GetAllLayanan(
+		search string,
+		page int,
+		limit int,
+		sortBy string,
+		sortOrder string,
+	) ([]models.LayananDesa, error)
 	GetLayananByID(id uint) (*models.LayananDesa, error)
 	GetLayananBySlug(slug string) (*models.LayananDesa, error)
 	UpdateLayanan(id uint, req *requests.LayananRequest) (*models.LayananDesa, error)
@@ -49,8 +55,14 @@ func (s *layananService) CreateLayanan(req *requests.LayananRequest) (*models.La
 	return &layanan, err
 }
 
-func (s *layananService) GetAllLayanan() ([]models.LayananDesa, error) {
-	return s.repository.FindLayanan()
+func (s *layananService) GetAllLayanan(
+	search string,
+	page int,
+	limit int,
+	sortBy string,
+	sortOrder string,
+) ([]models.LayananDesa, error) {
+	return s.repository.FindLayanan(search, page, limit, sortBy, sortOrder)
 }
 
 func (s *layananService) GetLayananByID(id uint) (*models.LayananDesa, error) {
