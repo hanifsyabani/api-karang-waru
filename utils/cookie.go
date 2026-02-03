@@ -1,6 +1,10 @@
 package utils
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 func SetAuthCookies(
 	c *gin.Context,
@@ -8,7 +12,8 @@ func SetAuthCookies(
 	expiresIn uint,
 ) {
 	maxAge := int(expiresIn * 3600)
-	secure := gin.Mode() == gin.ReleaseMode
+
+	c.SetSameSite(http.SameSiteNoneMode)
 
 	c.SetCookie(
 		"access_token", // nama cookie
@@ -16,12 +21,12 @@ func SetAuthCookies(
 		maxAge,         // detik (jam → detik)
 		"/",            // path
 		"",             // domain (kosong = current domain)
-		secure,           // secure (harus HTTPS kalau true)
+		true,           // secure (harus HTTPS kalau true)
 		true,           // httpOnly (tidak bisa diakses via JS)
 	)
-	
+
 }
 
-func ClearAuthCookies(c *gin.Context){
+func ClearAuthCookies(c *gin.Context) {
 	c.SetCookie("access_token", "", -1, "/", "", true, true)
 }
