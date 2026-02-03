@@ -111,27 +111,6 @@ The server will start on `http://localhost:8080` by default.
 
 ---
 
-## ⚙️ Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-# Application
-APP_PORT=8080
-
-# Database
-DATABASE_URL=postgres://user:password@localhost:5432/karang_waru?sslmode=disable
-
-# CORS Configuration
-CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
-CORS_ALLOWED_METHODS=GET,POST,PUT,DELETE,OPTIONS
-CORS_ALLOWED_HEADERS=Origin,Content-Type,Accept,Authorization
-CORS_ALLOW_CREDENTIALS=true
-CORS_EXPOSE_HEADERS=Content-Length
-
-# JWT Secret (generate a secure random string)
-JWT_SECRET=your-super-secret-jwt-key
-```
 
 ---
 
