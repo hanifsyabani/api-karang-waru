@@ -1,31 +1,39 @@
 package utils
 
 import (
-	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SetAuthCookies(
-	c *gin.Context,
-	access_token string,
-	expiresIn uint,
-) {
-	maxAge := int(expiresIn * 3600)
-
-	c.SetSameSite(http.SameSiteNoneMode)
+func SetAuthCookies(c *gin.Context, token string, expiresIn uint) {
+	isProd := os.Getenv("APP_ENV") == "production"
 
 	c.SetCookie(
-		"access_token", // nama cookie
-		access_token,   // value = token JWT
-		maxAge,         // detik (jam → detik)
-		"/",            // path
-		"",             // domain (kosong = current domain)
-		true,           // secure (harus HTTPS kalau true)
-		true,           // httpOnly (tidak bisa diakses via JS)
+		"access_token",
+		token,
+		int(expiresIn*3600),
+		"/",
+		"",
+		isProd, // Secure = true di prod
+		true,   // HttpOnly
 	)
 
+	// 🔥 override SameSite karena gin default Lax
+	c.Writer.Header().Add("Set-Cookie",
+		"access_token="+token+
+			"; Path=/"+
+			"; Max-Age="+string(rune(expiresIn*3600))+
+			"; HttpOnly"+
+			func() string {
+				if isProd {
+					return "; Secure; SameSite=None"
+				}
+				return "; SameSite=Lax"
+			}(),
+	)
 }
+
 
 func ClearAuthCookies(c *gin.Context) {
 	c.SetCookie("access_token", "", -1, "/", "", true, true)
