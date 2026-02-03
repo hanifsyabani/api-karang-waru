@@ -2,13 +2,20 @@ package repositories
 
 import (
 	"api-karang-waru/models"
+	"strings"
 
 	"gorm.io/gorm"
 )
 
 type LayananRepository interface {
 	CreateLayanan(layanan *models.LayananDesa) error
-	FindLayanan() ([]models.LayananDesa, error)
+	FindLayanan(
+		search string,
+		page int,
+		limit int,
+		sortBy string,
+		sortOrder string,
+	) ([]models.LayananDesa, error)
 	FindLayananByID(id uint) (*models.LayananDesa, error)
 	FindLayananBySlug(slug string) (*models.LayananDesa, error)
 	UpdateLayanan(layanan *models.LayananDesa) error
@@ -28,9 +35,31 @@ func (r *layananRepository) CreateLayanan(layanan *models.LayananDesa) error {
 }
 
 // []models.Demografis artinya fungsi tersebut mengembalikan sebuah slice (mirip array tapi lebih fleksibel di Go) yang berisi banyak objek models.Demografis.
-func (r *layananRepository) FindLayanan() ([]models.LayananDesa, error) {
+func (r *layananRepository) FindLayanan(
+	search string,
+	page int,
+	limit int,
+	sortBy string,
+	sortOrder string,
+) ([]models.LayananDesa, error) {
 	var layanan []models.LayananDesa
-	err := r.db.Find(&layanan).Error
+
+	offset := (page - 1) * limit
+	query := r.db.Model(&models.LayananDesa{})
+
+	if search != "" {
+		search = strings.ToLower(search)
+		searchPattern := "%" + search + "%"
+		query = query.Where("LOWER(service_name) LIKE ? OR LOWER(description) LIKE ?", searchPattern, searchPattern)
+	}
+
+	if sortOrder != "asc" && sortOrder != "desc" {
+		sortOrder = "desc"
+	}
+
+	query = query.Order(sortBy + " " + sortOrder)
+
+	err := query.Offset(offset).Limit(limit).Find(&layanan).Error
 	return layanan, err
 }
 

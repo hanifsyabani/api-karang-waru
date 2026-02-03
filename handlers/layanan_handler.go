@@ -51,7 +51,13 @@ func (h *LayananHandler) CreateLayanan(c *gin.Context) {
 
 // get all
 func (h *LayananHandler) GetAllLayanan(c *gin.Context) {
-	layanan, err := h.service.GetAllLayanan()
+
+	search := c.Query("search")
+	pageParam, _ := strconv.Atoi(c.DefaultQuery("page", "1")) 
+	limitParam,_ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	sortBy := c.DefaultQuery("sort_by", "created_at")
+	sortOrder := c.DefaultQuery("sort_order", "desc")
+	layanan, err := h.service.GetAllLayanan(search, pageParam, limitParam, sortBy, sortOrder)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, responses.APIResponse{
