@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -8,33 +9,39 @@ import (
 
 func SetAuthCookies(c *gin.Context, token string, expiresIn uint) {
 	isProd := os.Getenv("APP_ENV") == "production"
+	maxAge := int(expiresIn * 3600)
 
-	c.SetCookie(
-		"access_token",
+	// PENTING: Cross-origin cookies HARUS pakai SameSite=None + Secure
+	sameSite := "None"  // Bukan Lax!
+	secureFlag := ""
+	
+	if isProd {
+		secureFlag = "; Secure"
+	}
+
+	cookieValue := fmt.Sprintf(
+		"access_token=%s; Path=/; Max-Age=%d; HttpOnly; SameSite=%s%s",
 		token,
-		int(expiresIn*3600),
-		"/",
-		"",
-		isProd, // Secure = true di prod
-		true,   // HttpOnly
+		maxAge,
+		sameSite,
+		secureFlag,
 	)
 
-	// 🔥 override SameSite karena gin default Lax
-	c.Writer.Header().Add("Set-Cookie",
-		"access_token="+token+
-			"; Path=/"+
-			"; Max-Age="+string(rune(expiresIn*3600))+
-			"; HttpOnly"+
-			func() string {
-				if isProd {
-					return "; Secure; SameSite=None"
-				}
-				return "; SameSite=Lax"
-			}(),
-	)
+	c.Writer.Header().Set("Set-Cookie", cookieValue)
 }
 
-
 func ClearAuthCookies(c *gin.Context) {
-	c.SetCookie("access_token", "", -1, "/", "", true, true)
+	isProd := os.Getenv("APP_ENV") == "production"
+	
+	secureFlag := ""
+	if isProd {
+		secureFlag = "; Secure"
+	}
+
+	cookieValue := fmt.Sprintf(
+		"access_token=; Path=/; Max-Age=-1; HttpOnly; SameSite=None%s",
+		secureFlag,
+	)
+
+	c.Writer.Header().Set("Set-Cookie", cookieValue)
 }
