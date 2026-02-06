@@ -8,11 +8,22 @@ import (
 	"api-karang-waru/repositories"
 	"api-karang-waru/services"
 	"log"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
+
+// @title Karang Waru API
+// @version 1.0
+// @description API Desa Karang Waru
+// @host localhost:8080
+// @BasePath /api
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 
 func main() {
 	err := godotenv.Load()
@@ -103,6 +114,7 @@ func main() {
 		base_router.POST("/register", authHandler.Register)
 		base_router.POST("/login", authHandler.Login)
 		base_router.POST("/logout", authHandler.Logout)
+		base_router.GET("/docs", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	// protected
