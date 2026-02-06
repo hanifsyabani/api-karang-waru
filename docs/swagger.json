@@ -6,8 +6,8 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
-    "basePath": "/api",
+    "host": "eventual-alika-karang-waru-aabb0b75.koyeb.app",
+    "basePath": "/api/karang-waru",
     "paths": {
         "/karang-waru/sub-service": {
             "get": {
