@@ -37,6 +37,9 @@ func main() {
 	pendudukRepository := repositories.NewPendudukRepository(config.DB)
 	pendidikanRepository := repositories.NewPendidikanRepository(config.DB)
 	kesehatanRepository := repositories.NewKesehatanRepository(config.DB)
+	subLayananRepository := repositories.NewSubLayananRepository(config.DB)
+	riwayatPengajuanRepository := repositories.NewRiwayatPengajuanRepository(config.DB)
+	pengajuanLayananRepository := repositories.NewPengajuanLayananRepository(config.DB)
 
 	userService := services.NewUserService(userRepository)
 	authService := services.NewAuthService()
@@ -52,6 +55,11 @@ func main() {
 	pendidikanService := services.NewPendidikanService(pendidikanRepository)
 	kesehatanService := services.NewKesehatanService(kesehatanRepository)
 
+	subLayananService := services.NewSubLayananService(subLayananRepository, layananRepository)
+	pengajuanLayananService := services.NewPengajuanLayananService(pengajuanLayananRepository, layananRepository, subLayananRepository, riwayatPengajuanRepository)
+	riwayatPengajuanService := services.NewRiwayatPengajuanService(riwayatPengajuanRepository)
+
+
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(authService)
 	profilHandler := handlers.NewProfilDesaHandler(profilService)
@@ -65,6 +73,10 @@ func main() {
 	pendudukHandler := handlers.NewPendudukHandler(pendudukService)
 	pendidikanHandler := handlers.NewPendidikanHandler(pendidikanService)
 	kesehatanHandler := handlers.NewKesehatanHandler(kesehatanService)
+
+	subLayananHandler := handlers.NewSubLayananHandler(subLayananService)
+	pengajuanLayananHandler := handlers.NewPengajuanLayananHandler(pengajuanLayananService)
+	riwayatPengajuanHandler := handlers.NewRiwayatPengajuanHandler(riwayatPengajuanService)
 
 	router := gin.Default()
 
@@ -146,6 +158,26 @@ func main() {
 		auth.POST("/service", layananHandler.CreateLayanan)
 		auth.PUT("/service/:id", layananHandler.UpdateLayanan)
 		auth.DELETE("/service/:id", layananHandler.DeleteLayanan)
+
+		auth.GET("/sub-service", subLayananHandler.GetAllSubLayanan)
+		auth.GET("/sub-service/:id", subLayananHandler.GetSubLayananByID)
+		auth.POST("/sub-service", subLayananHandler.CreateSubLayanan)
+		auth.PUT("/sub-service/:id", subLayananHandler.UpdateSubLayanan)
+		auth.DELETE("/sub-service/:id", subLayananHandler.DeleteSubLayanan)
+		auth.GET("/sub-service/submissions", pengajuanLayananHandler.GetAllPengajuan)
+		auth.POST("/sub-service/submission", pengajuanLayananHandler.CreatePengajuan)
+		auth.GET("/sub-service/submission/:id", pengajuanLayananHandler.GetPengajuanByID) 
+		auth.GET("/sub-service/submission/nik/:nik", pengajuanLayananHandler.GetPengajuanByNIK) 
+		auth.GET("/sub-service/submission/surat/:nomor_surat", pengajuanLayananHandler.GetPengajuanByNomorSurat)
+		auth.PUT("/sub-service/submission/:id", pengajuanLayananHandler.UpdatePengajuan)
+		auth.PUT("/sub-service/submission/status/:id", pengajuanLayananHandler.UpdateStatusPengajuan)
+		auth.PUT("/sub-service/submission/approve/:id", pengajuanLayananHandler.ApprovePengajuan)
+		auth.PUT("/sub-service/submission/reject/:id", pengajuanLayananHandler.RejectPengajuan)
+		auth.DELETE("/sub-service/submission/:id", pengajuanLayananHandler.DeletePengajuan)
+		auth.GET("/sub-service/statistics", pengajuanLayananHandler.GetStatisticsByStatus)
+		auth.GET("/sub-service/history/all/:pengajuan_id", riwayatPengajuanHandler.GetAllRiwayat)
+		auth.GET("/sub-service/history/:pengajuan_id", riwayatPengajuanHandler.GetAllRiwayat)
+
 
 		auth.GET("/apbd", apbdHandler.GetApbd)
 		auth.GET("/apbd/:id", apbdHandler.GetApbdByID)

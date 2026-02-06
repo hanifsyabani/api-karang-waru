@@ -25,8 +25,10 @@ func InitDB() {
 	fmt.Println("✅ DB Connected")
 
 	// err = db.AutoMigrate(
-	// 	&models.FasilitasKesehatan{},
-	// 	&models.LayananKesehatan{},
+	// 	&models.LayananDesa{},
+	// 	&models.RiwayatPengajuan{},
+	// 	&models.PengajuanLayanan{},
+	// 	&models.SubLayananDesa{},
 	// )
 	// if err != nil {
 	// 	log.Fatal("Gagal migrasi database:", err)
