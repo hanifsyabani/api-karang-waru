@@ -19,12 +19,11 @@ import (
 // @title Karang Waru API
 // @version 1.0
 // @description API Desa Karang Waru
-// @host localhost:8080
-// @BasePath /api
+// @host eventual-alika-karang-waru-aabb0b75.koyeb.app
+// @BasePath /api/karang-waru
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
-
 func main() {
 	err := godotenv.Load()
 	if err != nil {

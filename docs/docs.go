@@ -342,8 +342,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/api",
+	Host:             "eventual-alika-karang-waru-aabb0b75.koyeb.app",
+	BasePath:         "/api/karang-waru",
 	Schemes:          []string{},
 	Title:            "Karang Waru API",
 	Description:      "API Desa Karang Waru",
