@@ -114,7 +114,7 @@ func main() {
 		base_router.POST("/register", authHandler.Register)
 		base_router.POST("/login", authHandler.Login)
 		base_router.POST("/logout", authHandler.Logout)
-		base_router.GET("/docs", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		base_router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 
 	// protected
