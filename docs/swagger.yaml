@@ -1,0 +1,217 @@
+basePath: /api
+definitions:
+  requests.PengajuanRequest:
+    properties:
+      alamat:
+        type: string
+      catatan:
+        type: string
+      dokumen:
+        type: string
+      email:
+        type: string
+      jenis_kelamin:
+        enum:
+        - L
+        - P
+        type: string
+      keperluan:
+        type: string
+      layanan_desa_id:
+        type: integer
+      nama_lengkap:
+        type: string
+      nik:
+        type: string
+      no_telp:
+        type: string
+      rt:
+        type: string
+      rw:
+        type: string
+      sub_layanan_id:
+        type: integer
+      tanggal_lahir:
+        type: string
+      tempat_lahir:
+        type: string
+    required:
+    - keperluan
+    - layanan_desa_id
+    - nama_lengkap
+    - nik
+    - no_telp
+    type: object
+  requests.SubLayananRequest:
+    properties:
+      aktif:
+        type: boolean
+      layanan_desa_id:
+        type: integer
+      nama:
+        type: string
+      persyaratan:
+        type: string
+      template:
+        type: string
+    required:
+    - layanan_desa_id
+    - nama
+    type: object
+  responses.APIResponse:
+    properties:
+      code:
+        type: string
+      data: {}
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API Desa Karang Waru
+  title: Karang Waru API
+  version: "1.0"
+paths:
+  /karang-waru/sub-service:
+    get:
+      description: Ambil daftar sub layanan (pagination & filter)
+      parameters:
+      - description: Search keyword
+        in: query
+        name: search
+        type: string
+      - description: Layanan Desa ID
+        in: query
+        name: layanan_desa_id
+        type: integer
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Limit per page
+        in: query
+        name: limit
+        type: integer
+      - description: Sort by field
+        in: query
+        name: sort_by
+        type: string
+      - description: asc / desc
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all sub layanan
+      tags:
+      - Sub Layanan
+    post:
+      consumes:
+      - application/json
+      description: Membuat sub layanan baru
+      parameters:
+      - description: Sub Layanan Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SubLayananRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Create sub layanan
+      tags:
+      - Sub Layanan
+  /karang-waru/sub-service/{id}:
+    put:
+      consumes:
+      - application/json
+      description: Update sub layanan berdasarkan ID
+      parameters:
+      - description: Sub Layanan ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SubLayananRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Update sub layanan
+      tags:
+      - Sub Layanan
+  /karang-waru/sub-service/submission:
+    post:
+      consumes:
+      - application/json
+      description: Membuat pengajuan layanan
+      parameters:
+      - description: Pengajuan Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/requests.PengajuanRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Create pengajuan layanan
+      tags:
+      - Pengajuan Layanan
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
