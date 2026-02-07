@@ -31,7 +31,7 @@ func NewSubLayananHandler(service services.SubLayananService) *SubLayananHandler
 // @Failure 400 {object} responses.APIResponse
 // @Failure 401 {object} responses.APIResponse
 // @Security BearerAuth
-// @Router /karang-waru/sub-service [post]
+// @Router /sub-service [post]
 func (h *SubLayananHandler) CreateSubLayanan(c *gin.Context) {
 	var req requests.SubLayananRequest
 
@@ -75,7 +75,7 @@ func (h *SubLayananHandler) CreateSubLayanan(c *gin.Context) {
 // @Param sort_order query string false "asc / desc"
 // @Success 200 {object} responses.APIResponse
 // @Security BearerAuth
-// @Router /karang-waru/sub-service [get]
+// @Router /sub-service [get]
 func (h *SubLayananHandler) GetAllSubLayanan(c *gin.Context) {
 	search := c.Query("search")
 	layananDesaIDParam := c.Query("layanan_desa_id")
@@ -188,7 +188,7 @@ func (h *SubLayananHandler) GetSubLayananByLayananID(c *gin.Context) {
 // @Failure 400 {object} responses.APIResponse
 // @Failure 404 {object} responses.APIResponse
 // @Security BearerAuth
-// @Router /karang-waru/sub-service/{id} [put]
+// @Router /sub-service/{id} [put]
 func (h *SubLayananHandler) UpdateSubLayanan(c *gin.Context) {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
@@ -267,17 +267,6 @@ func NewPengajuanLayananHandler(service services.PengajuanLayananService) *Penga
 	return &PengajuanLayananHandler{service}
 }
 
-// CreatePengajuan godoc
-// @Summary Create pengajuan layanan
-// @Description Membuat pengajuan layanan
-// @Tags Pengajuan Layanan
-// @Accept json
-// @Produce json
-// @Param body body requests.PengajuanRequest true "Pengajuan Request"
-// @Success 201 {object} responses.APIResponse
-// @Failure 400 {object} responses.APIResponse
-// @Security BearerAuth
-// @Router /karang-waru/sub-service/submission [post]
 func (h *PengajuanLayananHandler) CreatePengajuan(c *gin.Context) {
 	var req requests.PengajuanRequest
 
