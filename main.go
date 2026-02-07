@@ -5,6 +5,7 @@ import (
 	"api-karang-waru/handlers"
 	"api-karang-waru/helpers"
 	"api-karang-waru/middlewares"
+	_ "api-karang-waru/docs" 
 	"api-karang-waru/repositories"
 	"api-karang-waru/services"
 	"log"
