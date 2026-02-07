@@ -1,47 +1,5 @@
 basePath: /api/karang-waru
 definitions:
-  requests.PengajuanRequest:
-    properties:
-      alamat:
-        type: string
-      catatan:
-        type: string
-      dokumen:
-        type: string
-      email:
-        type: string
-      jenis_kelamin:
-        enum:
-        - L
-        - P
-        type: string
-      keperluan:
-        type: string
-      layanan_desa_id:
-        type: integer
-      nama_lengkap:
-        type: string
-      nik:
-        type: string
-      no_telp:
-        type: string
-      rt:
-        type: string
-      rw:
-        type: string
-      sub_layanan_id:
-        type: integer
-      tanggal_lahir:
-        type: string
-      tempat_lahir:
-        type: string
-    required:
-    - keperluan
-    - layanan_desa_id
-    - nama_lengkap
-    - nik
-    - no_telp
-    type: object
   requests.SubLayananRequest:
     properties:
       aktif:
@@ -73,7 +31,7 @@ info:
   title: Karang Waru API
   version: "1.0"
 paths:
-  /karang-waru/sub-service:
+  /sub-service:
     get:
       description: Ambil daftar sub layanan (pagination & filter)
       parameters:
@@ -144,7 +102,7 @@ paths:
       summary: Create sub layanan
       tags:
       - Sub Layanan
-  /karang-waru/sub-service/{id}:
+  /sub-service/{id}:
     put:
       consumes:
       - application/json
@@ -181,34 +139,6 @@ paths:
       summary: Update sub layanan
       tags:
       - Sub Layanan
-  /karang-waru/sub-service/submission:
-    post:
-      consumes:
-      - application/json
-      description: Membuat pengajuan layanan
-      parameters:
-      - description: Pengajuan Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/requests.PengajuanRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/responses.APIResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.APIResponse'
-      security:
-      - BearerAuth: []
-      summary: Create pengajuan layanan
-      tags:
-      - Pengajuan Layanan
 securityDefinitions:
   BearerAuth:
     in: header

@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/karang-waru/sub-service": {
+        "/sub-service": {
             "get": {
                 "security": [
                     {
@@ -127,52 +127,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/karang-waru/sub-service/submission": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Membuat pengajuan layanan",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Pengajuan Layanan"
-                ],
-                "summary": "Create pengajuan layanan",
-                "parameters": [
-                    {
-                        "description": "Pengajuan Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/requests.PengajuanRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/responses.APIResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.APIResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/karang-waru/sub-service/{id}": {
+        "/sub-service/{id}": {
             "put": {
                 "security": [
                     {
@@ -232,67 +187,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "requests.PengajuanRequest": {
-            "type": "object",
-            "required": [
-                "keperluan",
-                "layanan_desa_id",
-                "nama_lengkap",
-                "nik",
-                "no_telp"
-            ],
-            "properties": {
-                "alamat": {
-                    "type": "string"
-                },
-                "catatan": {
-                    "type": "string"
-                },
-                "dokumen": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "jenis_kelamin": {
-                    "type": "string",
-                    "enum": [
-                        "L",
-                        "P"
-                    ]
-                },
-                "keperluan": {
-                    "type": "string"
-                },
-                "layanan_desa_id": {
-                    "type": "integer"
-                },
-                "nama_lengkap": {
-                    "type": "string"
-                },
-                "nik": {
-                    "type": "string"
-                },
-                "no_telp": {
-                    "type": "string"
-                },
-                "rt": {
-                    "type": "string"
-                },
-                "rw": {
-                    "type": "string"
-                },
-                "sub_layanan_id": {
-                    "type": "integer"
-                },
-                "tanggal_lahir": {
-                    "type": "string"
-                },
-                "tempat_lahir": {
-                    "type": "string"
-                }
-            }
-        },
         "requests.SubLayananRequest": {
             "type": "object",
             "required": [
