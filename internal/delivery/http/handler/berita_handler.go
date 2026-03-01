@@ -1,0 +1,222 @@
+﻿package handler
+
+import (
+	"api-karang-waru/pkg/types"
+	"api-karang-waru/internal/usecase"
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+)
+
+type BeritaHandler struct {
+	service usecase.BeritaService
+}
+
+func NewBeritaHandler(service usecase.BeritaService) *BeritaHandler {
+	return &BeritaHandler{service}
+}
+
+func (h *BeritaHandler) CreateBerita(c *gin.Context) {
+	// BeritaRequest → fokus pada data yang dikirim berita.
+	// domain.Berita → fokus pada struktur tabel di database.
+
+	var req types.BeritaRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, types.APIResponse{
+			Code:    "BAD_REQUEST",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	berita, err := h.service.CreateBerita(&req)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.APIResponse{
+			Code:    "INTERNAL_SERVER_ERROR",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	// ketika succes
+	c.JSON(http.StatusCreated, types.APIResponse{
+		Code:    "CREATED",
+		Message: "Berita created successfully",
+		Data:    types.BeritaResponseFromModel(berita),
+	})
+}
+
+// get all
+func (h *BeritaHandler) GetBerita(c *gin.Context) {
+
+	search := c.Query("query")
+	sortBy := c.DefaultQuery("sortBy", "created_at")
+	sortOrder := c.DefaultQuery("sortOrder", "desc")
+
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	berita, err := h.service.GetAllBerita(search, page, limit, sortBy, sortOrder)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.APIResponse{
+			Code:    "INTERNAL_SERVER_ERROR",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	var beritaResponses []types.BeritaResponse
+	for _, berita := range berita {
+		beritaResponses = append(beritaResponses, types.BeritaResponseFromModel(&berita))
+	}
+
+	c.JSON(http.StatusOK, types.APIResponse{
+		Code:    "OK",
+		Message: "Berita retrieved successfully",
+		Data:    beritaResponses,
+	})
+
+}
+
+// get by id
+func (h *BeritaHandler) GetBeritaByID(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, types.APIResponse{
+			Code:    "BAD_REQUEST",
+			Message: "Invalid berita ID",
+			Data:    nil,
+		})
+		return
+	}
+
+	berita, err := h.service.GetBeritaByID(uint(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, types.APIResponse{
+			Code:    "NOT_FOUND",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.APIResponse{
+		Code:    "OK",
+		Message: "berita retrieved successfully",
+		Data:    types.BeritaResponseFromModel(berita),
+	})
+}
+
+func (h *BeritaHandler) GetBeritaBySlug(c *gin.Context) {
+	slug := c.Param("slug")
+	berita, err := h.service.GetBeritaBySlug(slug)
+	if err != nil {
+		c.JSON(http.StatusNotFound, types.APIResponse{
+			Code:    "NOT_FOUND",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.APIResponse{
+		Code:    "OK",
+		Message: "berita retrieved successfully",
+		Data:    types.BeritaResponseFromModel(berita),
+	})
+}
+func (h *BeritaHandler) GetNewsByCategory(c *gin.Context) {
+	berita, err := h.service.GetCountBeritaByCategory()
+	if err != nil {
+		c.JSON(http.StatusNotFound, types.APIResponse{
+			Code:    "NOT_FOUND",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.APIResponse{
+		Code:    "OK",
+		Message: "berita retrieved successfully",
+		Data:    berita,
+	})
+}
+
+// update
+func (h *BeritaHandler) UpdateBerita(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, types.APIResponse{
+			Code:    "BAD_REQUEST",
+			Message: "Invalid berita ID",
+			Data:    nil,
+		})
+		return
+	}
+
+	var req types.BeritaRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, types.APIResponse{
+			Code:    "BAD_REQUEST",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	berita, err := h.service.UpdateBerita(uint(id), &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.APIResponse{
+			Code:    "INTERNAL_SERVER_ERROR",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.APIResponse{
+		Code:    "OK",
+		Message: "User updated successfully",
+		Data:    types.BeritaResponseFromModel(berita),
+	})
+}
+
+// delete
+func (h *BeritaHandler) DeleteBerita(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, types.APIResponse{
+			Code:    "BAD_REQUEST",
+			Message: "Invalid berita ID",
+			Data:    nil,
+		})
+		return
+	}
+
+	err = h.service.DeleteBerita(uint(id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, types.APIResponse{
+			Code:    "INTERNAL_SERVER_ERROR",
+			Message: err.Error(),
+			Data:    nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, types.APIResponse{
+		Code:    "OK",
+		Message: "Berita deleted successfully",
+		Data:    nil,
+	})
+}
+
